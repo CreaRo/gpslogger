@@ -1,16 +1,16 @@
 /*******************************************************************************
  * This file is part of GPSLogger for Android.
- *
+ * <p/>
  * GPSLogger for Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
- *
+ * <p/>
  * GPSLogger for Android is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU General Public License
  * along with GPSLogger for Android.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -31,7 +31,11 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.*;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -42,12 +46,30 @@ import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.DisplayMetrics;
-import android.view.*;
-import android.widget.*;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.SpinnerAdapter;
+import android.widget.Toast;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amulyakhare.textdrawable.TextDrawable;
-import com.mendhak.gpslogger.common.*;
+import com.mendhak.gpslogger.common.EventBusHook;
+import com.mendhak.gpslogger.common.PreferenceHelper;
+import com.mendhak.gpslogger.common.Session;
+import com.mendhak.gpslogger.common.Strings;
+import com.mendhak.gpslogger.common.Systems;
 import com.mendhak.gpslogger.common.events.CommandEvents;
 import com.mendhak.gpslogger.common.events.ProfileEvents;
 import com.mendhak.gpslogger.common.events.ServiceEvents;
@@ -59,7 +81,11 @@ import com.mendhak.gpslogger.senders.FileSender;
 import com.mendhak.gpslogger.senders.FileSenderFactory;
 import com.mendhak.gpslogger.ui.Dialogs;
 import com.mendhak.gpslogger.ui.components.GpsLoggerDrawerItem;
-import com.mendhak.gpslogger.ui.fragments.display.*;
+import com.mendhak.gpslogger.ui.fragments.display.GenericViewFragment;
+import com.mendhak.gpslogger.ui.fragments.display.GpsBigViewFragment;
+import com.mendhak.gpslogger.ui.fragments.display.GpsDetailedViewFragment;
+import com.mendhak.gpslogger.ui.fragments.display.GpsLogViewFragment;
+import com.mendhak.gpslogger.ui.fragments.display.GpsSimpleViewFragment;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -69,13 +95,20 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
-import de.greenrobot.event.EventBus;
+
 import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import de.greenrobot.event.EventBus;
 
 public class GpsMainActivity extends AppCompatActivity
         implements
@@ -107,7 +140,7 @@ public class GpsMainActivity extends AppCompatActivity
         startAndBindService();
         registerEventBus();
 
-        if(preferenceHelper.shouldStartLoggingOnAppLaunch()){
+        if (preferenceHelper.shouldStartLoggingOnAppLaunch()) {
             LOG.debug("Start logging on app launch");
             EventBus.getDefault().postSticky(new CommandEvents.RequestStartStop(true));
         }
@@ -128,10 +161,10 @@ public class GpsMainActivity extends AppCompatActivity
         EventBus.getDefault().register(this);
     }
 
-    private void unregisterEventBus(){
+    private void unregisterEventBus() {
         try {
-        EventBus.getDefault().unregister(this);
-        } catch (Throwable t){
+            EventBus.getDefault().unregister(this);
+        } catch (Throwable t) {
             //this may crash if registration did not go through. just be safe
         }
     }
@@ -198,9 +231,9 @@ public class GpsMainActivity extends AppCompatActivity
             stopAndUnbindServiceIfRequired();
         }
 
-        if(keyCode == KeyEvent.KEYCODE_BACK){
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-            if(drawerLayout.isDrawerOpen(Gravity.LEFT)){
+            if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
                 toggleDrawer();
                 return true;
             }
@@ -210,20 +243,23 @@ public class GpsMainActivity extends AppCompatActivity
     }
 
 
-
-    private void loadVersionSpecificProperties(){
+    private void loadVersionSpecificProperties() {
         PackageInfo packageInfo;
         try {
             packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             int versionCode = packageInfo.versionCode;
 
-            if( preferenceHelper.getLastVersionSeen() <= 71 ){
+            if (preferenceHelper.getLastVersionSeen() <= 71) {
                 LOG.debug("preferenceHelper.getLastVersionSeen() " + preferenceHelper.getLastVersionSeen());
                 //Specifically disable passive provider... just once
-                if(preferenceHelper.getChosenListeners().contains("passive")){
+                if (preferenceHelper.getChosenListeners().contains("passive")) {
                     Set<String> listeners = new HashSet<>();
-                    if(preferenceHelper.getChosenListeners().contains(LocationManager.GPS_PROVIDER)){ listeners.add(LocationManager.GPS_PROVIDER); }
-                    if(preferenceHelper.getChosenListeners().contains(LocationManager.NETWORK_PROVIDER)){ listeners.add(LocationManager.NETWORK_PROVIDER); }
+                    if (preferenceHelper.getChosenListeners().contains(LocationManager.GPS_PROVIDER)) {
+                        listeners.add(LocationManager.GPS_PROVIDER);
+                    }
+                    if (preferenceHelper.getChosenListeners().contains(LocationManager.NETWORK_PROVIDER)) {
+                        listeners.add(LocationManager.NETWORK_PROVIDER);
+                    }
                     preferenceHelper.setChosenListeners(listeners);
                 }
             }
@@ -237,10 +273,10 @@ public class GpsMainActivity extends AppCompatActivity
     private void loadPresetProperties() {
 
         //Either look for /<appfolder>/gpslogger.properties or /sdcard/gpslogger.properties
-        File file =  new File(Files.storageFolder(getApplicationContext()) + "/gpslogger.properties");
-        if(!file.exists()){
+        File file = new File(Files.storageFolder(getApplicationContext()) + "/gpslogger.properties");
+        if (!file.exists()) {
             file = new File(Environment.getExternalStorageDirectory() + "/gpslogger.properties");
-            if(!file.exists()){
+            if (!file.exists()) {
                 return;
             }
         }
@@ -268,16 +304,15 @@ public class GpsMainActivity extends AppCompatActivity
     }
 
 
-
-    public Toolbar getToolbar(){
-        return (Toolbar)findViewById(R.id.toolbar);
+    public Toolbar getToolbar() {
+        return (Toolbar) findViewById(R.id.toolbar);
     }
 
-    public void setUpToolbar(){
-        try{
+    public void setUpToolbar() {
+        try {
             Toolbar toolbar = getToolbar();
             setSupportActionBar(toolbar);
-            if(getSupportActionBar() != null){
+            if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayShowTitleEnabled(false);
             }
 
@@ -292,8 +327,7 @@ public class GpsMainActivity extends AppCompatActivity
                 Window window = getWindow();
                 window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             }
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             //http://stackoverflow.com/questions/26657348/appcompat-v7-v21-0-0-causing-crash-on-samsung-devices-with-android-v4-2-2
             LOG.error("Thanks for this, Samsung", ex);
         }
@@ -344,11 +378,11 @@ public class GpsMainActivity extends AppCompatActivity
                                         @Override
                                         public void onInput(@NonNull MaterialDialog materialDialog, CharSequence charSequence) {
                                             String profileName = charSequence.toString().trim();
-                                            if(!Strings.isNullOrEmpty(profileName)){
+                                            if (!Strings.isNullOrEmpty(profileName)) {
                                                 final String[] ReservedChars = {"|", "\\", "?", "*", "<", "\"", ":", ">", ".", "/", "'", ";"};
 
                                                 for (String c : ReservedChars) {
-                                                    profileName = profileName.replace(c,"");
+                                                    profileName = profileName.replace(c, "");
                                                 }
 
                                                 EventBus.getDefault().post(new ProfileEvents.CreateNewProfile(profileName));
@@ -370,12 +404,11 @@ public class GpsMainActivity extends AppCompatActivity
                 .withOnAccountHeaderItemLongClickListener(new AccountHeader.OnAccountHeaderItemLongClickListener() {
                     @Override
                     public boolean onProfileLongClick(View view, final IProfile iProfile, boolean b) {
-                        if (iProfile.getIdentifier() > 150 ) {
+                        if (iProfile.getIdentifier() > 150) {
 
-                            if( preferenceHelper.getCurrentProfileName().equals(iProfile.getName().getText()) ){
+                            if (preferenceHelper.getCurrentProfileName().equals(iProfile.getName().getText())) {
                                 Dialogs.alert(getString(R.string.sorry), getString(R.string.profile_switch_before_delete), GpsMainActivity.this);
-                            }
-                            else {
+                            } else {
                                 new MaterialDialog.Builder(GpsMainActivity.this)
                                         .title(getString(R.string.profile_delete))
                                         .content(iProfile.getName().getText())
@@ -408,7 +441,6 @@ public class GpsMainActivity extends AppCompatActivity
                 .withAccountHeader(drawerHeader)
                 .withSelectedItem(-1)
                 .build();
-
 
 
         materialDrawer.addItem(GpsLoggerDrawerItem.newPrimary(R.string.pref_general_title, R.string.pref_general_summary, R.drawable.settings, 1000));
@@ -494,9 +526,9 @@ public class GpsMainActivity extends AppCompatActivity
 
     }
 
-    private void refreshProfileIcon(String profileName){
+    private void refreshProfileIcon(String profileName) {
 
-        ImageView imgLetter = (ImageView)drawerHeader.getView().findViewById(R.id.profiletextletter);
+        ImageView imgLetter = (ImageView) drawerHeader.getView().findViewById(R.id.profiletextletter);
         TextDrawable drawLetter = TextDrawable.builder()
                 .beginConfig()
                 .bold()
@@ -539,7 +571,7 @@ public class GpsMainActivity extends AppCompatActivity
             }
         });
 
-        for(File propertyFile: propertyFiles){
+        for (File propertyFile : propertyFiles) {
 
             String name = propertyFile.getName();
             int pos = name.lastIndexOf(".");
@@ -551,7 +583,7 @@ public class GpsMainActivity extends AppCompatActivity
 
             drawerHeader.addProfile(pdi, 1);
 
-            if(name.equals(preferenceHelper.getCurrentProfileName())){
+            if (name.equals(preferenceHelper.getCurrentProfileName())) {
                 pdi.withSetSelected(true);
                 drawerHeader.setActiveProfile(pdi);
             }
@@ -563,17 +595,16 @@ public class GpsMainActivity extends AppCompatActivity
 
     }
 
-    public void toggleDrawer(){
-        if(materialDrawer.isDrawerOpen()){
+    public void toggleDrawer() {
+        if (materialDrawer.isDrawerOpen()) {
             materialDrawer.closeDrawer();
 
-        }
-        else {
+        } else {
             materialDrawer.openDrawer();
         }
     }
 
-    private int getUserSelectedNavigationItem(){
+    private int getUserSelectedNavigationItem() {
         return preferenceHelper.getUserSelectedNavigationItem();
     }
 
@@ -582,7 +613,7 @@ public class GpsMainActivity extends AppCompatActivity
         loadFragmentView(currentSelectedPosition);
     }
 
-    private void loadFragmentView(int position){
+    private void loadFragmentView(int position) {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
         switch (position) {
@@ -604,7 +635,7 @@ public class GpsMainActivity extends AppCompatActivity
         transaction.commitAllowingStateLoss();
     }
 
-    private GenericViewFragment getCurrentFragment(){
+    private GenericViewFragment getCurrentFragment() {
         Fragment currentFragment = getFragmentManager().findFragmentById(R.id.container);
         if (currentFragment instanceof GenericViewFragment) {
             return ((GenericViewFragment) currentFragment);
@@ -625,7 +656,9 @@ public class GpsMainActivity extends AppCompatActivity
 
         Toolbar toolbarBottom = (Toolbar) findViewById(R.id.toolbarBottom);
 
-        if(toolbarBottom.getMenu().size() > 0){ return true;}
+        if (toolbarBottom.getMenu().size() > 0) {
+            return true;
+        }
 
         toolbarBottom.inflateMenu(R.menu.gps_main);
         setupEvenlyDistributedToolbar();
@@ -635,7 +668,7 @@ public class GpsMainActivity extends AppCompatActivity
         return true;
     }
 
-    public void setupEvenlyDistributedToolbar(){
+    public void setupEvenlyDistributedToolbar() {
         //http://stackoverflow.com/questions/26489079/evenly-spaced-menu-items-on-toolbar
 
         // Use Display metrics to get Screen Dimensions
@@ -658,22 +691,22 @@ public class GpsMainActivity extends AppCompatActivity
         Toolbar.LayoutParams toolbarParams = new Toolbar.LayoutParams(screenWidth, Toolbar.LayoutParams.WRAP_CONTENT);
 
         // Loop through the child Items
-        for(int i = 0; i < childCount; i++){
+        for (int i = 0; i < childCount; i++) {
             // Get the item at the current index
             View childView = toolbar.getChildAt(i);
             // If its a ViewGroup
-            if(childView instanceof ViewGroup){
+            if (childView instanceof ViewGroup) {
                 // Set its layout params
                 childView.setLayoutParams(toolbarParams);
                 // Get the child count of this view group, and compute the item widths based on this count & screen size
                 int innerChildCount = ((ViewGroup) childView).getChildCount();
-                int itemWidth  = (screenWidth / innerChildCount);
+                int itemWidth = (screenWidth / innerChildCount);
                 // Create layout params for the ActionMenuView
                 ActionMenuView.LayoutParams params = new ActionMenuView.LayoutParams(itemWidth, Toolbar.LayoutParams.WRAP_CONTENT);
                 // Loop through the children
-                for(int j = 0; j < innerChildCount; j++){
+                for (int j = 0; j < innerChildCount; j++) {
                     View grandChild = ((ViewGroup) childView).getChildAt(j);
-                    if(grandChild instanceof ActionMenuItemView){
+                    if (grandChild instanceof ActionMenuItemView) {
                         // set the layout parameters on each View
                         grandChild.setLayoutParams(params);
                     }
@@ -687,7 +720,7 @@ public class GpsMainActivity extends AppCompatActivity
         onWaitingForLocation(Session.isWaitingForLocation());
         setBulbStatus(Session.isStarted());
 
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbarBottom);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarBottom);
         MenuItem mnuAnnotate = toolbar.getMenu().findItem(R.id.mnuAnnotate);
         MenuItem mnuOnePoint = toolbar.getMenu().findItem(R.id.mnuOnePoint);
         MenuItem mnuAutoSendNow = toolbar.getMenu().findItem(R.id.mnuAutoSendNow);
@@ -834,7 +867,6 @@ public class GpsMainActivity extends AppCompatActivity
 
         showFileListDialog(FileSenderFactory.getDropBoxSender());
     }
-
 
 
     private void uploadToOwnCloud() {
@@ -1108,16 +1140,16 @@ public class GpsMainActivity extends AppCompatActivity
 
 
     @EventBusHook
-    public void onEventMainThread(UploadEvents.OpenGTS upload){
+    public void onEventMainThread(UploadEvents.OpenGTS upload) {
         LOG.debug("Open GTS Event completed, success: " + upload.success);
         Dialogs.hideProgress();
 
-        if(!upload.success){
+        if (!upload.success) {
             LOG.error(getString(R.string.opengts_setup_title)
                     + "-"
                     + getString(R.string.upload_failure));
 
-            if(userInvokedUpload){
+            if (userInvokedUpload) {
                 Dialogs.error(getString(R.string.sorry), getString(R.string.upload_failure), upload.message, upload.throwable, this);
                 userInvokedUpload = false;
             }
@@ -1125,15 +1157,15 @@ public class GpsMainActivity extends AppCompatActivity
     }
 
     @EventBusHook
-    public void onEventMainThread(UploadEvents.AutoEmail upload){
+    public void onEventMainThread(UploadEvents.AutoEmail upload) {
         LOG.debug("Auto Email Event completed, success: " + upload.success);
         Dialogs.hideProgress();
 
-        if(!upload.success){
+        if (!upload.success) {
             LOG.error(getString(R.string.autoemail_title)
                     + "-"
                     + getString(R.string.upload_failure));
-            if(userInvokedUpload){
+            if (userInvokedUpload) {
                 Dialogs.error(getString(R.string.sorry), getString(R.string.upload_failure), upload.message, upload.throwable, this);
                 userInvokedUpload = false;
             }
@@ -1141,15 +1173,15 @@ public class GpsMainActivity extends AppCompatActivity
     }
 
     @EventBusHook
-    public void onEventMainThread(UploadEvents.OpenStreetMap upload){
+    public void onEventMainThread(UploadEvents.OpenStreetMap upload) {
         LOG.debug("OSM Event completed, success: " + upload.success);
         Dialogs.hideProgress();
 
-        if(!upload.success){
+        if (!upload.success) {
             LOG.error(getString(R.string.osm_setup_title)
                     + "-"
                     + getString(R.string.upload_failure));
-            if(userInvokedUpload){
+            if (userInvokedUpload) {
                 Dialogs.error(getString(R.string.sorry), getString(R.string.upload_failure), upload.message, upload.throwable, this);
                 userInvokedUpload = false;
             }
@@ -1157,15 +1189,15 @@ public class GpsMainActivity extends AppCompatActivity
     }
 
     @EventBusHook
-    public void onEventMainThread(UploadEvents.Dropbox upload){
+    public void onEventMainThread(UploadEvents.Dropbox upload) {
         LOG.debug("Dropbox Event completed, success: " + upload.success);
         Dialogs.hideProgress();
 
-        if(!upload.success){
+        if (!upload.success) {
             LOG.error(getString(R.string.dropbox_setup_title)
                     + "-"
                     + getString(R.string.upload_failure));
-            if(userInvokedUpload){
+            if (userInvokedUpload) {
                 Dialogs.error(getString(R.string.sorry), getString(R.string.upload_failure), upload.message, upload.throwable, this);
                 userInvokedUpload = false;
             }
@@ -1173,15 +1205,15 @@ public class GpsMainActivity extends AppCompatActivity
     }
 
     @EventBusHook
-    public void onEventMainThread(UploadEvents.GDocs upload){
+    public void onEventMainThread(UploadEvents.GDocs upload) {
         LOG.debug("GDocs Event completed, success: " + upload.success);
         Dialogs.hideProgress();
 
-        if(!upload.success){
+        if (!upload.success) {
             LOG.error(getString(R.string.gdocs_setup_title)
                     + "-"
                     + getString(R.string.upload_failure));
-            if(userInvokedUpload){
+            if (userInvokedUpload) {
                 Dialogs.error(getString(R.string.sorry), getString(R.string.upload_failure), upload.message, upload.throwable, this);
                 userInvokedUpload = false;
             }
@@ -1189,15 +1221,15 @@ public class GpsMainActivity extends AppCompatActivity
     }
 
     @EventBusHook
-    public void onEventMainThread(UploadEvents.Ftp upload){
+    public void onEventMainThread(UploadEvents.Ftp upload) {
         LOG.debug("FTP Event completed, success: " + upload.success);
         Dialogs.hideProgress();
 
-        if(!upload.success){
+        if (!upload.success) {
             LOG.error(getString(R.string.autoftp_setup_title)
                     + "-"
                     + getString(R.string.upload_failure));
-            if(userInvokedUpload){
+            if (userInvokedUpload) {
                 Dialogs.error(getString(R.string.sorry), getString(R.string.upload_failure), upload.message, upload.throwable, this);
                 userInvokedUpload = false;
             }
@@ -1206,16 +1238,16 @@ public class GpsMainActivity extends AppCompatActivity
 
 
     @EventBusHook
-    public void onEventMainThread(UploadEvents.OwnCloud upload){
+    public void onEventMainThread(UploadEvents.OwnCloud upload) {
         LOG.debug("OwnCloud Event completed, success: " + upload.success);
         Dialogs.hideProgress();
 
-        if(!upload.success){
+        if (!upload.success) {
             LOG.error(getString(R.string.owncloud_setup_title)
                     + "-"
                     + getString(R.string.upload_failure));
 
-            if(userInvokedUpload){
+            if (userInvokedUpload) {
                 Dialogs.error(getString(R.string.sorry), getString(R.string.upload_failure), upload.message, upload.throwable, this);
                 userInvokedUpload = false;
             }
@@ -1223,32 +1255,31 @@ public class GpsMainActivity extends AppCompatActivity
     }
 
     @EventBusHook
-    public void onEventMainThread(ServiceEvents.WaitingForLocation waitingForLocation){
+    public void onEventMainThread(ServiceEvents.WaitingForLocation waitingForLocation) {
         onWaitingForLocation(waitingForLocation.waiting);
     }
 
     @EventBusHook
-    public void onEventMainThread(ServiceEvents.AnnotationStatus annotationStatus){
-        if(annotationStatus.annotationWritten){
+    public void onEventMainThread(ServiceEvents.AnnotationStatus annotationStatus) {
+        if (annotationStatus.annotationWritten) {
             setAnnotationDone();
-        }
-        else {
+        } else {
             setAnnotationReady();
         }
     }
 
     @EventBusHook
-    public void onEventMainThread(ServiceEvents.LoggingStatus loggingStatus){
-            enableDisableMenuItems();
+    public void onEventMainThread(ServiceEvents.LoggingStatus loggingStatus) {
+        enableDisableMenuItems();
     }
 
     @EventBusHook
-    public void onEventMainThread(ProfileEvents.CreateNewProfile createProfileEvent){
+    public void onEventMainThread(ProfileEvents.CreateNewProfile createProfileEvent) {
 
         LOG.debug("Creating profile: " + createProfileEvent.newProfileName);
 
         try {
-            File f = new File(Files.storageFolder(GpsMainActivity.this), createProfileEvent.newProfileName+".properties");
+            File f = new File(Files.storageFolder(GpsMainActivity.this), createProfileEvent.newProfileName + ".properties");
             f.createNewFile();
 
             populateProfilesList();
@@ -1260,9 +1291,9 @@ public class GpsMainActivity extends AppCompatActivity
     }
 
     @EventBusHook
-    public void onEventMainThread(ProfileEvents.DeleteProfile deleteProfileEvent){
+    public void onEventMainThread(ProfileEvents.DeleteProfile deleteProfileEvent) {
         LOG.debug("Deleting profile: " + deleteProfileEvent.profileName);
-        File f = new File(Files.storageFolder(GpsMainActivity.this), deleteProfileEvent.profileName+".properties");
+        File f = new File(Files.storageFolder(GpsMainActivity.this), deleteProfileEvent.profileName + ".properties");
         f.delete();
 
         populateProfilesList();

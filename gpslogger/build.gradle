@@ -203,6 +203,9 @@ dependencies {
     //Progress button
     compile 'com.github.dmytrodanylyk.android-process-button:library:1.0.0'
 
+    //Butterkife
+    compile 'com.jakewharton:butterknife:7.0.1'
+
     //Android Priority Jobqueue
     compile 'com.birbit:android-priority-jobqueue:1.3.1'
 
