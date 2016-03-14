@@ -32,6 +32,8 @@ public class InitActivity extends AppCompatActivity {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkPermissionPhoneNumber();
         } else {
+            PreferenceHelper.getInstance().setUserPhoneNumber(getEmail(getApplicationContext()));
+            Log.d("INITACT", "The phone number is " + PreferenceHelper.getInstance().getUserPhoneNumber());
             startActivity(new Intent(InitActivity.this, SimpleMainActivity.class));
         }
     }
