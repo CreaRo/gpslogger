@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
+
 import com.afollestad.materialdialogs.prefs.MaterialEditTextPreference;
 import com.afollestad.materialdialogs.prefs.MaterialListPreference;
 import com.mendhak.gpslogger.R;
@@ -33,15 +34,16 @@ import com.mendhak.gpslogger.senders.email.AutoEmailManager;
 import com.mendhak.gpslogger.ui.Dialogs;
 import com.mendhak.gpslogger.ui.components.CustomSwitchPreference;
 import com.mendhak.gpslogger.ui.fragments.PermissionedPreferenceFragment;
+
 import de.greenrobot.event.EventBus;
 
 public class AutoEmailFragment extends PermissionedPreferenceFragment implements
-        OnPreferenceChangeListener,  OnPreferenceClickListener, PreferenceValidator {
+        OnPreferenceChangeListener, OnPreferenceClickListener, PreferenceValidator {
 
     private final PreferenceHelper preferenceHelper;
     AutoEmailManager aem;
 
-    public AutoEmailFragment(){
+    public AutoEmailFragment() {
         this.preferenceHelper = PreferenceHelper.getInstance();
         this.aem = new AutoEmailManager(preferenceHelper);
     }
@@ -82,10 +84,10 @@ public class AutoEmailFragment extends PermissionedPreferenceFragment implements
         EventBus.getDefault().register(this);
     }
 
-    private void unregisterEventBus(){
+    private void unregisterEventBus() {
         try {
             EventBus.getDefault().unregister(this);
-        } catch (Throwable t){
+        } catch (Throwable t) {
             //this may crash if registration did not go through. just be safe
         }
     }
@@ -100,7 +102,7 @@ public class AutoEmailFragment extends PermissionedPreferenceFragment implements
         MaterialEditTextPreference txtTarget = (MaterialEditTextPreference) findPreference("autoemail_target");
         MaterialEditTextPreference txtFrom = (MaterialEditTextPreference) findPreference("smtp_from");
 
-        if (!aem.isValid(txtSmtpServer.getText(), txtSmtpPort.getText(), txtUsername.getText(), txtPassword.getText(),txtTarget.getText())) {
+        if (!aem.isValid(txtSmtpServer.getText(), txtSmtpPort.getText(), txtUsername.getText(), txtPassword.getText(), txtTarget.getText())) {
             Dialogs.alert(getString(R.string.autoemail_invalid_form),
                     getString(R.string.autoemail_invalid_form_message),
                     getActivity());
@@ -114,7 +116,6 @@ public class AutoEmailFragment extends PermissionedPreferenceFragment implements
 
         Dialogs.progress(getActivity(), getString(R.string.autoemail_sendingtest),
                 getString(R.string.please_wait));
-
 
 
         aem.sendTestEmail(txtSmtpServer.getText(), txtSmtpPort.getText(),
@@ -175,11 +176,11 @@ public class AutoEmailFragment extends PermissionedPreferenceFragment implements
     }
 
     @EventBusHook
-    public void onEventMainThread(UploadEvents.AutoEmail o){
+    public void onEventMainThread(UploadEvents.AutoEmail o) {
 
         Dialogs.hideProgress();
 
-        if(o.success){
+        if (o.success) {
             Dialogs.alert(getString(R.string.success),
                     getString(R.string.autoemail_testresult_success), getActivity());
         } else {

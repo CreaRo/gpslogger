@@ -32,6 +32,8 @@ public  class PreferenceNames {
     public static final String EMAIL_SMTP_USERNAME = "smtp_username";
     public static final String EMAIL_SMTP_PASSWORD = "smtp_password";
 
+    public static final String USER_PHONE_NUMBER = "user_phone_number";
+
     public static final String EMAIL_SMTP_SSL = "smtp_ssl";
     public static final String EMAIL_TARGET = "autoemail_target";
     public static final String EMAIL_FROM = "smtp_from";

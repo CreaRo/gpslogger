@@ -51,17 +51,17 @@ public class FileLoggerFactory {
         }
 
         if (preferenceHelper.shouldLogToGpx()) {
-            File gpxFile = new File(gpxFolder.getPath(), Session.getCurrentFileName() + ".gpx");
+            File gpxFile = new File(gpxFolder.getPath(), Session.getCurrentFileName(context) + ".gpx");
             loggers.add(new Gpx10FileLogger(gpxFile, Session.shouldAddNewTrackSegment()));
         }
 
         if (preferenceHelper.shouldLogToKml()) {
-            File kmlFile = new File(gpxFolder.getPath(), Session.getCurrentFileName() + ".kml");
+            File kmlFile = new File(gpxFolder.getPath(), Session.getCurrentFileName(context) + ".kml");
             loggers.add(new Kml22FileLogger(kmlFile, Session.shouldAddNewTrackSegment()));
         }
 
         if (preferenceHelper.shouldLogToPlainText()) {
-            File file = new File(gpxFolder.getPath(), Session.getCurrentFileName() + ".txt");
+            File file = new File(gpxFolder.getPath(), Session.getCurrentFileName(context) + ".txt");
             loggers.add(new PlainTextFileLogger(file));
         }
 

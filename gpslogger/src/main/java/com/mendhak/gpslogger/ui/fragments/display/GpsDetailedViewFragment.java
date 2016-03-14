@@ -187,7 +187,7 @@ public class GpsDetailedViewFragment extends GenericViewFragment {
             }
 
 
-            showCurrentFileName(Session.getCurrentFileName());
+            showCurrentFileName(Session.getCurrentFileName(getActivity()));
 
 
             TextView txtTargets = (TextView) rootView.findViewById(R.id.detailedview_autosendtargets_text);
@@ -243,10 +243,10 @@ public class GpsDetailedViewFragment extends GenericViewFragment {
         }
 
         TextView txtFilename = (TextView) rootView.findViewById(R.id.detailedview_file_text);
-        txtFilename.setText(Session.getCurrentFileName() + "\n (" + preferenceHelper.getGpsLoggerFolder() + ")");
+        txtFilename.setText(Session.getCurrentFileName(getActivity()) + "\n (" + preferenceHelper.getGpsLoggerFolder() + ")");
 
         Files.setFileExplorerLink(txtFilename,
-                Html.fromHtml(Session.getCurrentFileName() + "<br /> (" + "<font color='blue'><u>" + preferenceHelper.getGpsLoggerFolder() + "</u></font>" + ")"),
+                Html.fromHtml(Session.getCurrentFileName(getActivity()) + "<br /> (" + "<font color='blue'><u>" + preferenceHelper.getGpsLoggerFolder() + "</u></font>" + ")"),
                 preferenceHelper.getGpsLoggerFolder(),
                 getActivity().getApplicationContext());
     }

@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.preference.PreferenceManager;
+
 import com.mendhak.gpslogger.R;
 import com.mendhak.gpslogger.common.slf4j.Logs;
 import com.mendhak.gpslogger.loggers.Files;
+
 import org.slf4j.Logger;
 
 import java.io.*;
@@ -24,12 +26,12 @@ public class PreferenceHelper {
     /**
      * Use PreferenceHelper.getInstance()
      */
-    private PreferenceHelper(){
+    private PreferenceHelper() {
 
     }
 
-    public static PreferenceHelper getInstance(){
-        if(instance==null){
+    public static PreferenceHelper getInstance() {
+        if (instance == null) {
             instance = new PreferenceHelper();
             instance.prefs = PreferenceManager.getDefaultSharedPreferences(AppSettings.getInstance().getApplicationContext());
         }
@@ -40,44 +42,45 @@ public class PreferenceHelper {
     /**
      * Whether to auto send to Dropbox
      */
-    @ProfilePreference(name= PreferenceNames.AUTOSEND_DROPBOX_ENABLED)
-    public  boolean isDropboxAutoSendEnabled() {
+    @ProfilePreference(name = PreferenceNames.AUTOSEND_DROPBOX_ENABLED)
+    public boolean isDropboxAutoSendEnabled() {
         return prefs.getBoolean(PreferenceNames.AUTOSEND_DROPBOX_ENABLED, false);
     }
 
-    public  String getDropBoxAccessKeyName() {
+    public String getDropBoxAccessKeyName() {
         return prefs.getString(PreferenceNames.DROPBOX_ACCESS_KEY, null);
     }
 
-    public  void setDropBoxAccessKeyName(String key) {
+    public void setDropBoxAccessKeyName(String key) {
         prefs.edit().putString(PreferenceNames.DROPBOX_ACCESS_KEY, key).apply();
     }
 
-    public  String getDropBoxAccessSecretName() {
+    public String getDropBoxAccessSecretName() {
         return prefs.getString(PreferenceNames.DROPBOX_ACCESS_SECRET, null);
     }
 
-    public  void setDropBoxAccessSecret(String secret) {
+    public void setDropBoxAccessSecret(String secret) {
         prefs.edit().putString(PreferenceNames.DROPBOX_ACCESS_SECRET, secret).apply();
     }
-
-
-
 
 
     /**
      * Whether automatic sending to email is enabled
      */
-    @ProfilePreference(name= PreferenceNames.AUTOSEND_EMAIL_ENABLED)
+    @ProfilePreference(name = PreferenceNames.AUTOSEND_EMAIL_ENABLED)
     public boolean isEmailAutoSendEnabled() {
         return prefs.getBoolean(PreferenceNames.AUTOSEND_EMAIL_ENABLED, false);
+    }
+
+    public void setEmailAutoSendEnabled(boolean b) {
+        prefs.edit().putBoolean(PreferenceNames.AUTOSEND_EMAIL_ENABLED, b).apply();
     }
 
 
     /**
      * SMTP Server to use when sending emails
      */
-    @ProfilePreference(name= PreferenceNames.EMAIL_SMTP_SERVER)
+    @ProfilePreference(name = PreferenceNames.EMAIL_SMTP_SERVER)
     public String getSmtpServer() {
         return prefs.getString(PreferenceNames.EMAIL_SMTP_SERVER, "");
     }
@@ -92,7 +95,7 @@ public class PreferenceHelper {
     /**
      * SMTP Port to use when sending emails
      */
-    @ProfilePreference(name= PreferenceNames.EMAIL_SMTP_PORT)
+    @ProfilePreference(name = PreferenceNames.EMAIL_SMTP_PORT)
     public String getSmtpPort() {
         return prefs.getString(PreferenceNames.EMAIL_SMTP_PORT, "25");
     }
@@ -104,24 +107,31 @@ public class PreferenceHelper {
     /**
      * SMTP Username to use when sending emails
      */
-    @ProfilePreference(name= PreferenceNames.EMAIL_SMTP_USERNAME)
+    @ProfilePreference(name = PreferenceNames.EMAIL_SMTP_USERNAME)
     public String getSmtpUsername() {
         return prefs.getString(PreferenceNames.EMAIL_SMTP_USERNAME, "");
     }
 
+    public void setSmtpUsername(String username) {
+        prefs.edit().putString(PreferenceNames.EMAIL_SMTP_USERNAME, username).apply();
+    }
 
     /**
      * SMTP Password to use when sending emails
      */
-    @ProfilePreference(name= PreferenceNames.EMAIL_SMTP_PASSWORD)
+    @ProfilePreference(name = PreferenceNames.EMAIL_SMTP_PASSWORD)
     public String getSmtpPassword() {
         return prefs.getString(PreferenceNames.EMAIL_SMTP_PASSWORD, "");
+    }
+
+    public void setSmtpPassword(String pwd) {
+        prefs.edit().putString(PreferenceNames.EMAIL_SMTP_PASSWORD, pwd).apply();
     }
 
     /**
      * Whether SSL is enabled when sending emails
      */
-    @ProfilePreference(name= PreferenceNames.EMAIL_SMTP_SSL)
+    @ProfilePreference(name = PreferenceNames.EMAIL_SMTP_SSL)
     public boolean isSmtpSsl() {
         return prefs.getBoolean(PreferenceNames.EMAIL_SMTP_SSL, true);
     }
@@ -133,20 +143,36 @@ public class PreferenceHelper {
         prefs.edit().putBoolean(PreferenceNames.EMAIL_SMTP_SSL, smtpSsl).apply();
     }
 
+    /**
+     * Set and put phone number
+     *
+     * @param user_phone_number
+     */
+
+    public void setUserPhoneNumber(String user_phone_number) {
+        prefs.edit().putString(PreferenceNames.USER_PHONE_NUMBER, user_phone_number).apply();
+    }
+
+    public String getUserPhoneNumber() {
+        return prefs.getString(PreferenceNames.USER_PHONE_NUMBER, "NULL");
+    }
 
     /**
      * Email addresses to send to
      */
-    @ProfilePreference(name= PreferenceNames.EMAIL_TARGET)
+    @ProfilePreference(name = PreferenceNames.EMAIL_TARGET)
     public String getAutoEmailTargets() {
         return prefs.getString(PreferenceNames.EMAIL_TARGET, "");
     }
 
+    public void setAutoEmailTargets(String target) {
+        prefs.edit().putString(PreferenceNames.EMAIL_TARGET, target).apply();
+    }
 
     /**
      * SMTP from address to use
      */
-    @ProfilePreference(name= PreferenceNames.EMAIL_FROM)
+    @ProfilePreference(name = PreferenceNames.EMAIL_FROM)
     private String getSmtpFrom() {
         return prefs.getString(PreferenceNames.EMAIL_FROM, "");
     }
@@ -163,11 +189,10 @@ public class PreferenceHelper {
     }
 
 
-
     /**
      * FTP Server name for auto send
      */
-    @ProfilePreference(name= PreferenceNames.FTP_SERVER)
+    @ProfilePreference(name = PreferenceNames.FTP_SERVER)
     public String getFtpServerName() {
         return prefs.getString(PreferenceNames.FTP_SERVER, "");
     }
@@ -176,7 +201,7 @@ public class PreferenceHelper {
     /**
      * FTP Port for auto send
      */
-    @ProfilePreference(name= PreferenceNames.FTP_PORT)
+    @ProfilePreference(name = PreferenceNames.FTP_PORT)
     public int getFtpPort() {
         return Strings.toInt(prefs.getString(PreferenceNames.FTP_PORT, "21"), 21);
     }
@@ -185,7 +210,7 @@ public class PreferenceHelper {
     /**
      * FTP Username for auto send
      */
-    @ProfilePreference(name= PreferenceNames.FTP_USERNAME)
+    @ProfilePreference(name = PreferenceNames.FTP_USERNAME)
     public String getFtpUsername() {
         return prefs.getString(PreferenceNames.FTP_USERNAME, "");
     }
@@ -194,7 +219,7 @@ public class PreferenceHelper {
     /**
      * FTP Password for auto send
      */
-    @ProfilePreference(name= PreferenceNames.FTP_PASSWORD)
+    @ProfilePreference(name = PreferenceNames.FTP_PASSWORD)
     public String getFtpPassword() {
         return prefs.getString(PreferenceNames.FTP_PASSWORD, "");
     }
@@ -202,7 +227,7 @@ public class PreferenceHelper {
     /**
      * Whether to use FTPS
      */
-    @ProfilePreference(name= PreferenceNames.FTP_USE_FTPS)
+    @ProfilePreference(name = PreferenceNames.FTP_USE_FTPS)
     public boolean shouldFtpUseFtps() {
         return prefs.getBoolean(PreferenceNames.FTP_USE_FTPS, false);
     }
@@ -211,7 +236,7 @@ public class PreferenceHelper {
     /**
      * FTP protocol to use (SSL or TLS)
      */
-    @ProfilePreference(name= PreferenceNames.FTP_SSLORTLS)
+    @ProfilePreference(name = PreferenceNames.FTP_SSLORTLS)
     public String getFtpProtocol() {
         return prefs.getString(PreferenceNames.FTP_SSLORTLS, "");
     }
@@ -220,7 +245,7 @@ public class PreferenceHelper {
     /**
      * Whether to use FTP Implicit mode for auto send
      */
-    @ProfilePreference(name= PreferenceNames.FTP_IMPLICIT)
+    @ProfilePreference(name = PreferenceNames.FTP_IMPLICIT)
     public boolean isFtpImplicit() {
         return prefs.getBoolean(PreferenceNames.FTP_IMPLICIT, false);
     }
@@ -229,7 +254,7 @@ public class PreferenceHelper {
     /**
      * Whether to auto send to FTP target
      */
-    @ProfilePreference(name= PreferenceNames.AUTOSEND_FTP_ENABLED)
+    @ProfilePreference(name = PreferenceNames.AUTOSEND_FTP_ENABLED)
     public boolean isFtpAutoSendEnabled() {
         return prefs.getBoolean(PreferenceNames.AUTOSEND_FTP_ENABLED, false);
     }
@@ -238,18 +263,16 @@ public class PreferenceHelper {
     /**
      * FTP Directory on the server for auto send
      */
-    @ProfilePreference(name= PreferenceNames.FTP_DIRECTORY)
+    @ProfilePreference(name = PreferenceNames.FTP_DIRECTORY)
     public String getFtpDirectory() {
         return prefs.getString(PreferenceNames.FTP_DIRECTORY, "GPSLogger");
     }
 
 
-
-
     /**
      * GPS Logger folder path on phone.  Falls back to {@link Files#storageFolder(Context)} if nothing specified.
      */
-    @ProfilePreference(name= PreferenceNames.GPSLOGGER_FOLDER)
+    @ProfilePreference(name = PreferenceNames.GPSLOGGER_FOLDER)
     public String getGpsLoggerFolder() {
         return prefs.getString(PreferenceNames.GPSLOGGER_FOLDER, Files.storageFolder(AppSettings.getInstance().getApplicationContext()).getAbsolutePath());
     }
@@ -263,14 +286,10 @@ public class PreferenceHelper {
     }
 
 
-
-
-
-
     /**
      * Whether to auto send to Google Drive
      */
-    @ProfilePreference(name= PreferenceNames.AUTOSEND_GOOGLEDRIVE_ENABLED)
+    @ProfilePreference(name = PreferenceNames.AUTOSEND_GOOGLEDRIVE_ENABLED)
     public boolean isGDocsAutoSendEnabled() {
         return prefs.getBoolean(PreferenceNames.AUTOSEND_GOOGLEDRIVE_ENABLED, false);
     }
@@ -278,7 +297,7 @@ public class PreferenceHelper {
     /**
      * Target directory for Google Drive auto send
      */
-    @ProfilePreference(name= PreferenceNames.GOOGLEDRIVE_FOLDERNAME)
+    @ProfilePreference(name = PreferenceNames.GOOGLEDRIVE_FOLDERNAME)
     public String getGoogleDriveFolderName() {
         return prefs.getString(PreferenceNames.GOOGLEDRIVE_FOLDERNAME, "GPSLogger for Android");
     }
@@ -286,7 +305,7 @@ public class PreferenceHelper {
     /**
      * Google Drive OAuth token
      */
-    public String getGoogleDriveAuthToken(){
+    public String getGoogleDriveAuthToken() {
         return prefs.getString(PreferenceNames.GOOGLEDRIVE_AUTHTOKEN, "");
     }
 
@@ -300,7 +319,7 @@ public class PreferenceHelper {
     /**
      * Gets Google account used for Google Drive auto send
      */
-    @ProfilePreference(name= PreferenceNames.GOOGLEDRIVE_ACCOUNTNAME)
+    @ProfilePreference(name = PreferenceNames.GOOGLEDRIVE_ACCOUNTNAME)
     public String getGoogleDriveAccountName() {
         return prefs.getString(PreferenceNames.GOOGLEDRIVE_ACCOUNTNAME, "");
     }
@@ -316,7 +335,7 @@ public class PreferenceHelper {
     /**
      * The minimum seconds interval between logging points
      */
-    @ProfilePreference(name= PreferenceNames.MINIMUM_INTERVAL)
+    @ProfilePreference(name = PreferenceNames.MINIMUM_INTERVAL)
     public int getMinimumLoggingInterval() {
         return Strings.toInt(prefs.getString(PreferenceNames.MINIMUM_INTERVAL, "60"), 60);
     }
@@ -336,7 +355,7 @@ public class PreferenceHelper {
     /**
      * The minimum distance, in meters, to have traveled before a point is recorded
      */
-    @ProfilePreference(name= PreferenceNames.MINIMUM_DISTANCE)
+    @ProfilePreference(name = PreferenceNames.MINIMUM_DISTANCE)
     public int getMinimumDistanceInterval() {
         return (Strings.toInt(prefs.getString(PreferenceNames.MINIMUM_DISTANCE, "0"), 0));
     }
@@ -354,7 +373,7 @@ public class PreferenceHelper {
     /**
      * The minimum accuracy of a point before the point is recorded, in meters
      */
-    @ProfilePreference(name= PreferenceNames.MINIMUM_ACCURACY)
+    @ProfilePreference(name = PreferenceNames.MINIMUM_ACCURACY)
     public int getMinimumAccuracy() {
         return (Strings.toInt(prefs.getString(PreferenceNames.MINIMUM_ACCURACY, "0"), 0));
     }
@@ -363,7 +382,7 @@ public class PreferenceHelper {
     /**
      * Whether to keep GPS on between fixes
      */
-    @ProfilePreference(name= PreferenceNames.KEEP_GPS_ON_BETWEEN_FIXES)
+    @ProfilePreference(name = PreferenceNames.KEEP_GPS_ON_BETWEEN_FIXES)
     public boolean shouldKeepGPSOnBetweenFixes() {
         return prefs.getBoolean(PreferenceNames.KEEP_GPS_ON_BETWEEN_FIXES, false);
     }
@@ -379,7 +398,7 @@ public class PreferenceHelper {
     /**
      * How long to keep retrying for a fix if one with the user-specified accuracy hasn't been found
      */
-    @ProfilePreference(name= PreferenceNames.LOGGING_RETRY_TIME)
+    @ProfilePreference(name = PreferenceNames.LOGGING_RETRY_TIME)
     public int getLoggingRetryPeriod() {
         return (Strings.toInt(prefs.getString(PreferenceNames.LOGGING_RETRY_TIME, "60"), 60));
     }
@@ -397,7 +416,7 @@ public class PreferenceHelper {
     /**
      * How long to keep retrying for an accurate point before giving up
      */
-    @ProfilePreference(name= PreferenceNames.ABSOLUTE_TIMEOUT)
+    @ProfilePreference(name = PreferenceNames.ABSOLUTE_TIMEOUT)
     public int getAbsoluteTimeoutForAcquiringPosition() {
         return (Strings.toInt(prefs.getString(PreferenceNames.ABSOLUTE_TIMEOUT, "120"), 120));
     }
@@ -414,19 +433,26 @@ public class PreferenceHelper {
     /**
      * Whether to start logging on application launch
      */
-    @ProfilePreference(name= PreferenceNames.START_LOGGING_ON_APP_LAUNCH)
+    @ProfilePreference(name = PreferenceNames.START_LOGGING_ON_APP_LAUNCH)
     public boolean shouldStartLoggingOnAppLaunch() {
         return prefs.getBoolean(PreferenceNames.START_LOGGING_ON_APP_LAUNCH, false);
+    }
+
+    public void setStartLoggingOnAppLaunch(boolean startLoggingOnAppLaunch) {
+        prefs.edit().putBoolean(PreferenceNames.START_LOGGING_ON_APP_LAUNCH, startLoggingOnAppLaunch).apply();
     }
 
     /**
      * Whether to start logging when phone is booted up
      */
-    @ProfilePreference(name= PreferenceNames.START_LOGGING_ON_BOOTUP)
+    @ProfilePreference(name = PreferenceNames.START_LOGGING_ON_BOOTUP)
     public boolean shouldStartLoggingOnBootup() {
         return prefs.getBoolean(PreferenceNames.START_LOGGING_ON_BOOTUP, false);
     }
 
+    public void setStartLoggingOnBootup(boolean startLoggingOnBootup) {
+        prefs.edit().putBoolean(PreferenceNames.START_LOGGING_ON_BOOTUP, startLoggingOnBootup).apply();
+    }
 
     /**
      * Which navigation item the user selected
@@ -447,16 +473,20 @@ public class PreferenceHelper {
     /**
      * Whether to hide the buttons when displaying the app notification
      */
-    @ProfilePreference(name= PreferenceNames.HIDE_NOTIFICATION_BUTTONS)
+    @ProfilePreference(name = PreferenceNames.HIDE_NOTIFICATION_BUTTONS)
     public boolean shouldHideNotificationButtons() {
         return prefs.getBoolean(PreferenceNames.HIDE_NOTIFICATION_BUTTONS, false);
+    }
+
+    public void setHideNotificationButtons(boolean b) {
+        prefs.edit().putBoolean(PreferenceNames.HIDE_NOTIFICATION_BUTTONS, b).apply();
     }
 
 
     /**
      * Whether to display certain values using imperial units
      */
-    @ProfilePreference(name= PreferenceNames.DISPLAY_IMPERIAL)
+    @ProfilePreference(name = PreferenceNames.DISPLAY_IMPERIAL)
     public boolean shouldDisplayImperialUnits() {
         return prefs.getBoolean(PreferenceNames.DISPLAY_IMPERIAL, false);
     }
@@ -465,7 +495,7 @@ public class PreferenceHelper {
     /**
      * Whether to log to KML file
      */
-    @ProfilePreference(name= PreferenceNames.LOG_TO_KML)
+    @ProfilePreference(name = PreferenceNames.LOG_TO_KML)
     public boolean shouldLogToKml() {
         return prefs.getBoolean(PreferenceNames.LOG_TO_KML, false);
     }
@@ -474,25 +504,32 @@ public class PreferenceHelper {
     /**
      * Whether to log to GPX file
      */
-    @ProfilePreference(name= PreferenceNames.LOG_TO_GPX)
+    @ProfilePreference(name = PreferenceNames.LOG_TO_GPX)
     public boolean shouldLogToGpx() {
         return prefs.getBoolean(PreferenceNames.LOG_TO_GPX, true);
+    }
+
+    public void setLogToGpx(boolean logToGpx) {
+        prefs.edit().putBoolean(PreferenceNames.LOG_TO_GPX, logToGpx).apply();
     }
 
 
     /**
      * Whether to log to a plaintext CSV file
      */
-    @ProfilePreference(name= PreferenceNames.LOG_TO_CSV)
+    @ProfilePreference(name = PreferenceNames.LOG_TO_CSV)
     public boolean shouldLogToPlainText() {
         return prefs.getBoolean(PreferenceNames.LOG_TO_CSV, false);
     }
 
+    public void setLogToPlainText(boolean logToPlainText) {
+        prefs.edit().putBoolean(PreferenceNames.LOG_TO_CSV, logToPlainText).apply();
+    }
 
     /**
      * Whether to log to NMEA file
      */
-    @ProfilePreference(name= PreferenceNames.LOG_TO_NMEA)
+    @ProfilePreference(name = PreferenceNames.LOG_TO_NMEA)
     public boolean shouldLogToNmea() {
         return prefs.getBoolean(PreferenceNames.LOG_TO_NMEA, false);
     }
@@ -501,7 +538,7 @@ public class PreferenceHelper {
     /**
      * Whether to log to a custom URL. The app will log to the URL returned by {@link #getCustomLoggingUrl()}
      */
-    @ProfilePreference(name= PreferenceNames.LOG_TO_URL)
+    @ProfilePreference(name = PreferenceNames.LOG_TO_URL)
     public boolean shouldLogToCustomUrl() {
         return prefs.getBoolean(PreferenceNames.LOG_TO_URL, false);
     }
@@ -509,7 +546,7 @@ public class PreferenceHelper {
     /**
      * The custom URL to log to.  Relevant only if {@link #shouldLogToCustomUrl()} returns true.
      */
-    @ProfilePreference(name= PreferenceNames.LOG_TO_URL_PATH)
+    @ProfilePreference(name = PreferenceNames.LOG_TO_URL_PATH)
     public String getCustomLoggingUrl() {
         return prefs.getString(PreferenceNames.LOG_TO_URL_PATH, "http://localhost/log?lat=%LAT&longitude=%LON&time=%TIME&s=%SPD");
     }
@@ -524,7 +561,7 @@ public class PreferenceHelper {
     /**
      * Whether to log to OpenGTS.  See their <a href="http://opengts.sourceforge.net/OpenGTS_Config.pdf">installation guide</a>
      */
-    @ProfilePreference(name= PreferenceNames.LOG_TO_OPENGTS)
+    @ProfilePreference(name = PreferenceNames.LOG_TO_OPENGTS)
     public boolean shouldLogToOpenGTS() {
         return prefs.getBoolean(PreferenceNames.LOG_TO_OPENGTS, false);
     }
@@ -533,7 +570,7 @@ public class PreferenceHelper {
     /**
      * Gets a list of location providers that the app will listen to
      */
-    @ProfilePreference(name= PreferenceNames.LOCATION_LISTENERS)
+    @ProfilePreference(name = PreferenceNames.LOCATION_LISTENERS)
     public Set<String> getChosenListeners() {
         Set<String> defaultListeners = new HashSet<>(getDefaultListeners());
         return prefs.getStringSet(PreferenceNames.LOCATION_LISTENERS, defaultListeners);
@@ -571,7 +608,7 @@ public class PreferenceHelper {
     /**
      * Default set of listeners
      */
-    public List<String> getDefaultListeners(){
+    public List<String> getDefaultListeners() {
         List<String> listeners = new ArrayList<>();
         listeners.add(LocationManager.GPS_PROVIDER);
         listeners.add(LocationManager.NETWORK_PROVIDER);
@@ -581,6 +618,7 @@ public class PreferenceHelper {
 
     /**
      * All the possible listeners
+     *
      * @return
      */
     public List<String> getAvailableListeners() {
@@ -593,18 +631,16 @@ public class PreferenceHelper {
     }
 
 
-
     /**
      * New file creation preference:
      * onceaday - once a day,
      * customfile - custom file (static),
      * everystart - every time the service starts
      */
-    @ProfilePreference(name=PreferenceNames.NEW_FILE_CREATION_MODE)
+    @ProfilePreference(name = PreferenceNames.NEW_FILE_CREATION_MODE)
     public String getNewFileCreationMode() {
         return prefs.getString(PreferenceNames.NEW_FILE_CREATION_MODE, "onceaday");
     }
-
 
     /**
      * Whether a new file should be created daily
@@ -625,7 +661,7 @@ public class PreferenceHelper {
     /**
      * The custom filename to use if {@link #shouldCreateCustomFile()} returns true
      */
-    @ProfilePreference(name= PreferenceNames.CUSTOM_FILE_NAME)
+    @ProfilePreference(name = PreferenceNames.CUSTOM_FILE_NAME)
     public String getCustomFileName() {
         return prefs.getString(PreferenceNames.CUSTOM_FILE_NAME, "gpslogger");
     }
@@ -641,7 +677,7 @@ public class PreferenceHelper {
     /**
      * Whether to prompt for a custom file name each time logging starts, if {@link #shouldCreateCustomFile()} returns true
      */
-    @ProfilePreference(name= PreferenceNames.ASK_CUSTOM_FILE_NAME)
+    @ProfilePreference(name = PreferenceNames.ASK_CUSTOM_FILE_NAME)
     public boolean shouldAskCustomFileNameEachTime() {
         return prefs.getBoolean(PreferenceNames.ASK_CUSTOM_FILE_NAME, true);
     }
@@ -649,25 +685,32 @@ public class PreferenceHelper {
     /**
      * Whether automatic sending to various targets (email,ftp, dropbox, etc) is enabled
      */
-    @ProfilePreference(name= PreferenceNames.AUTOSEND_ENABLED)
+    @ProfilePreference(name = PreferenceNames.AUTOSEND_ENABLED)
     public boolean isAutoSendEnabled() {
         return prefs.getBoolean(PreferenceNames.AUTOSEND_ENABLED, false);
     }
 
+    public void setAutoSendEnabled(boolean b) {
+        prefs.edit().putBoolean(PreferenceNames.AUTOSEND_ENABLED, b).apply();
+    }
 
     /**
      * The time, in minutes, before files are sent to the auto-send targets
      */
-    @ProfilePreference(name= PreferenceNames.AUTOSEND_FREQUENCY)
+    @ProfilePreference(name = PreferenceNames.AUTOSEND_FREQUENCY)
     public int getAutoSendInterval() {
         return Math.round(Float.valueOf(prefs.getString(PreferenceNames.AUTOSEND_FREQUENCY, "60")));
+    }
+
+    public void setAutoSendInterval(int minutes) {
+        prefs.edit().putString(PreferenceNames.AUTOSEND_FREQUENCY, minutes + "").apply();
     }
 
 
     /**
      * Whether to auto send to targets when logging is stopped
      */
-    @ProfilePreference(name= PreferenceNames.AUTOSEND_ON_STOP)
+    @ProfilePreference(name = PreferenceNames.AUTOSEND_ON_STOP)
     public boolean shouldAutoSendOnStopLogging() {
         return prefs.getBoolean(PreferenceNames.AUTOSEND_ON_STOP, false);
     }
@@ -687,16 +730,20 @@ public class PreferenceHelper {
     /**
      * Whether to zip the files up before auto sending to targets
      */
-    @ProfilePreference(name= PreferenceNames.AUTOSEND_ZIP)
+    @ProfilePreference(name = PreferenceNames.AUTOSEND_ZIP)
     public boolean shouldSendZipFile() {
         return prefs.getBoolean(PreferenceNames.AUTOSEND_ZIP, true);
+    }
+
+    public void setSendZipFile(boolean b) {
+        prefs.edit().putBoolean(PreferenceNames.AUTOSEND_ZIP, b).apply();
     }
 
 
     /**
      * Whether to auto send to OpenGTS Server
      */
-    @ProfilePreference(name= PreferenceNames.AUTOSEND_OPENGTS_ENABLED)
+    @ProfilePreference(name = PreferenceNames.AUTOSEND_OPENGTS_ENABLED)
     public boolean isOpenGtsAutoSendEnabled() {
         return prefs.getBoolean(PreferenceNames.AUTOSEND_OPENGTS_ENABLED, false);
     }
@@ -705,7 +752,7 @@ public class PreferenceHelper {
     /**
      * OpenGTS Server name
      */
-    @ProfilePreference(name= PreferenceNames.OPENGTS_SERVER)
+    @ProfilePreference(name = PreferenceNames.OPENGTS_SERVER)
     public String getOpenGTSServer() {
         return prefs.getString(PreferenceNames.OPENGTS_SERVER, "");
     }
@@ -714,7 +761,7 @@ public class PreferenceHelper {
     /**
      * OpenGTS Server Port
      */
-    @ProfilePreference(name= PreferenceNames.OPENGTS_PORT)
+    @ProfilePreference(name = PreferenceNames.OPENGTS_PORT)
     public String getOpenGTSServerPort() {
         return prefs.getString(PreferenceNames.OPENGTS_PORT, "");
     }
@@ -723,7 +770,7 @@ public class PreferenceHelper {
     /**
      * Communication method when talking to OpenGTS (either UDP or HTTP)
      */
-    @ProfilePreference(name= PreferenceNames.OPENGTS_PROTOCOL)
+    @ProfilePreference(name = PreferenceNames.OPENGTS_PROTOCOL)
     public String getOpenGTSServerCommunicationMethod() {
         return prefs.getString(PreferenceNames.OPENGTS_PROTOCOL, "");
     }
@@ -732,7 +779,7 @@ public class PreferenceHelper {
     /**
      * OpenGTS Server Path
      */
-    @ProfilePreference(name= PreferenceNames.OPENGTS_SERVER_PATH)
+    @ProfilePreference(name = PreferenceNames.OPENGTS_SERVER_PATH)
     public String getOpenGTSServerPath() {
         return prefs.getString(PreferenceNames.OPENGTS_SERVER_PATH, "");
     }
@@ -741,7 +788,7 @@ public class PreferenceHelper {
     /**
      * Device ID for OpenGTS communication
      */
-    @ProfilePreference(name= PreferenceNames.OPENGTS_DEVICE_ID)
+    @ProfilePreference(name = PreferenceNames.OPENGTS_DEVICE_ID)
     public String getOpenGTSDeviceId() {
         return prefs.getString(PreferenceNames.OPENGTS_DEVICE_ID, "");
     }
@@ -750,12 +797,10 @@ public class PreferenceHelper {
     /**
      * Account name for OpenGTS communication
      */
-    @ProfilePreference(name= PreferenceNames.OPENGTS_ACCOUNT_NAME)
+    @ProfilePreference(name = PreferenceNames.OPENGTS_ACCOUNT_NAME)
     public String getOpenGTSAccountName() {
         return prefs.getString(PreferenceNames.OPENGTS_ACCOUNT_NAME, "");
     }
-
-
 
 
     /**
@@ -813,7 +858,7 @@ public class PreferenceHelper {
     /**
      * Tags associated with uploaded trace on OpenStreetMap
      */
-    @ProfilePreference(name= PreferenceNames.OPENSTREETMAP_TAGS)
+    @ProfilePreference(name = PreferenceNames.OPENSTREETMAP_TAGS)
     public String getOSMTags() {
         return prefs.getString(PreferenceNames.OPENSTREETMAP_TAGS, "");
     }
@@ -821,30 +866,25 @@ public class PreferenceHelper {
     /**
      * Visibility of uploaded trace on OpenStreetMap
      */
-    @ProfilePreference(name= PreferenceNames.OPENSTREETMAP_VISIBILITY)
+    @ProfilePreference(name = PreferenceNames.OPENSTREETMAP_VISIBILITY)
     public String getOSMVisibility() {
         return prefs.getString(PreferenceNames.OPENSTREETMAP_VISIBILITY, "private");
     }
 
 
-
-
     /**
      * Whether to auto send to OpenStreetMap
      */
-    @ProfilePreference(name= PreferenceNames.AUTOSEND_OSM_ENABLED)
+    @ProfilePreference(name = PreferenceNames.AUTOSEND_OSM_ENABLED)
     public boolean isOsmAutoSendEnabled() {
         return prefs.getBoolean(PreferenceNames.AUTOSEND_OSM_ENABLED, false);
     }
 
 
-
-
-
     /**
      * OwnCloud server for auto send
      */
-    @ProfilePreference(name= PreferenceNames.OWNCLOUD_SERVER)
+    @ProfilePreference(name = PreferenceNames.OWNCLOUD_SERVER)
     public String getOwnCloudServerName() {
         return prefs.getString(PreferenceNames.OWNCLOUD_SERVER, "");
     }
@@ -853,7 +893,7 @@ public class PreferenceHelper {
     /**
      * OwnCloud username for auto send
      */
-    @ProfilePreference(name= PreferenceNames.OWNCLOUD_USERNAME)
+    @ProfilePreference(name = PreferenceNames.OWNCLOUD_USERNAME)
     public String getOwnCloudUsername() {
         return prefs.getString(PreferenceNames.OWNCLOUD_USERNAME, "");
     }
@@ -862,7 +902,7 @@ public class PreferenceHelper {
     /**
      * OwnCloud password for auto send
      */
-    @ProfilePreference(name= PreferenceNames.OWNCLOUD_PASSWORD)
+    @ProfilePreference(name = PreferenceNames.OWNCLOUD_PASSWORD)
     public String getOwnCloudPassword() {
         return prefs.getString(PreferenceNames.OWNCLOUD_PASSWORD, "");
     }
@@ -871,7 +911,7 @@ public class PreferenceHelper {
     /**
      * OwnCloud target directory for autosend
      */
-    @ProfilePreference(name= PreferenceNames.OWNCLOUD_DIRECTORY)
+    @ProfilePreference(name = PreferenceNames.OWNCLOUD_DIRECTORY)
     public String getOwnCloudDirectory() {
         return prefs.getString(PreferenceNames.OWNCLOUD_DIRECTORY, "/gpslogger");
     }
@@ -880,27 +920,29 @@ public class PreferenceHelper {
     /**
      * Whether to auto send to OwnCloud
      */
-    @ProfilePreference(name= PreferenceNames.AUTOSEND_OWNCLOUD_ENABLED)
+    @ProfilePreference(name = PreferenceNames.AUTOSEND_OWNCLOUD_ENABLED)
     public boolean isOwnCloudAutoSendEnabled() {
         return prefs.getBoolean(PreferenceNames.AUTOSEND_OWNCLOUD_ENABLED, false);
     }
 
 
-
-
     /**
      * Whether to prefix the phone's serial number to the logging file
      */
-    @ProfilePreference(name= PreferenceNames.PREFIX_SERIAL_TO_FILENAME)
+    @ProfilePreference(name = PreferenceNames.PREFIX_SERIAL_TO_FILENAME)
     public boolean shouldPrefixSerialToFileName() {
         return prefs.getBoolean(PreferenceNames.PREFIX_SERIAL_TO_FILENAME, false);
+    }
+
+    public void setPrefixSerialToFileName(boolean prefixSerialToFileName) {
+        prefs.edit().putBoolean(PreferenceNames.PREFIX_SERIAL_TO_FILENAME, prefixSerialToFileName).apply();
     }
 
 
     /**
      * Whether to detect user activity and if the user is still, pause logging
      */
-    @ProfilePreference(name= PreferenceNames.ACTIVITYRECOGNITION_DONTLOGIFSTILL)
+    @ProfilePreference(name = PreferenceNames.ACTIVITYRECOGNITION_DONTLOGIFSTILL)
     public boolean shouldNotLogIfUserIsStill() {
         return prefs.getBoolean(PreferenceNames.ACTIVITYRECOGNITION_DONTLOGIFSTILL, false);
     }
@@ -909,7 +951,7 @@ public class PreferenceHelper {
     /**
      * Whether to subtract GeoID height from the reported altitude to get Mean Sea Level altitude instead of WGS84
      */
-    @ProfilePreference(name= PreferenceNames.ALTITUDE_SHOULD_ADJUST)
+    @ProfilePreference(name = PreferenceNames.ALTITUDE_SHOULD_ADJUST)
     public boolean shouldAdjustAltitudeFromGeoIdHeight() {
         return prefs.getBoolean(PreferenceNames.ALTITUDE_SHOULD_ADJUST, false);
     }
@@ -918,7 +960,7 @@ public class PreferenceHelper {
     /**
      * How much to subtract from the altitude reported
      */
-    @ProfilePreference(name= PreferenceNames.ALTITUDE_SUBTRACT_OFFSET)
+    @ProfilePreference(name = PreferenceNames.ALTITUDE_SUBTRACT_OFFSET)
     public int getSubtractAltitudeOffset() {
         return Strings.toInt(prefs.getString(PreferenceNames.ALTITUDE_SUBTRACT_OFFSET, "0"), 0);
     }
@@ -927,33 +969,32 @@ public class PreferenceHelper {
     /**
      * Whether to autosend only if wifi is enabled
      */
-    @ProfilePreference(name= PreferenceNames.AUTOSEND_WIFI_ONLY)
+    @ProfilePreference(name = PreferenceNames.AUTOSEND_WIFI_ONLY)
     public boolean shouldAutoSendOnWifiOnly() {
         return prefs.getBoolean(PreferenceNames.AUTOSEND_WIFI_ONLY, false);
     }
 
 
-    @ProfilePreference(name= PreferenceNames.CURRENT_PROFILE_NAME)
+    @ProfilePreference(name = PreferenceNames.CURRENT_PROFILE_NAME)
     public String getCurrentProfileName() {
         return prefs.getString(PreferenceNames.CURRENT_PROFILE_NAME, AppSettings.getInstance().getString(R.string.profile_default));
     }
 
-    public void setCurrentProfileName(String profileName){
+    public void setCurrentProfileName(String profileName) {
         prefs.edit().putString(PreferenceNames.CURRENT_PROFILE_NAME, profileName).apply();
     }
 
     /**
      * A preference to keep track of version specific changes.
      */
-    @ProfilePreference(name= PreferenceNames.LAST_VERSION_SEEN_BY_USER)
-    public int getLastVersionSeen(){
+    @ProfilePreference(name = PreferenceNames.LAST_VERSION_SEEN_BY_USER)
+    public int getLastVersionSeen() {
         return Strings.toInt(prefs.getString(PreferenceNames.LAST_VERSION_SEEN_BY_USER, "1"), 1);
     }
 
-    public void setLastVersionSeen(int lastVersionSeen){
+    public void setLastVersionSeen(int lastVersionSeen) {
         prefs.edit().putString(PreferenceNames.LAST_VERSION_SEEN_BY_USER, String.valueOf(lastVersionSeen)).apply();
     }
-
 
 
     public void savePropertiesFromPreferences(File f) throws IOException {
@@ -961,35 +1002,33 @@ public class PreferenceHelper {
         Properties props = new Properties();
 
         Method[] methods = PreferenceHelper.class.getMethods();
-        for(Method m : methods){
+        for (Method m : methods) {
 
             Annotation a = m.getAnnotation(ProfilePreference.class);
-            if(a != null){
+            if (a != null) {
                 try {
                     Object val = m.invoke(this);
 
-                    if(val != null){
+                    if (val != null) {
 
-                        if(((ProfilePreference)a).name().equals("listeners")){
+                        if (((ProfilePreference) a).name().equals("listeners")) {
                             String listeners = "";
-                            Set<String> chosenListeners = (Set<String>)val;
+                            Set<String> chosenListeners = (Set<String>) val;
                             StringBuilder sbListeners = new StringBuilder();
                             for (String l : chosenListeners) {
                                 sbListeners.append(l);
                                 sbListeners.append(",");
                             }
-                            if(sbListeners.length() > 0){
-                                listeners = sbListeners.substring(0, sbListeners.length() -1);
+                            if (sbListeners.length() > 0) {
+                                listeners = sbListeners.substring(0, sbListeners.length() - 1);
                             }
                             LOG.debug("LISTENERS - " + listeners);
                             props.setProperty("listeners", listeners);
-                        }
-                        else {
-                            props.setProperty(((ProfilePreference)a).name(),String.valueOf(val));
+                        } else {
+                            props.setProperty(((ProfilePreference) a).name(), String.valueOf(val));
                             LOG.debug(((ProfilePreference) a).name() + " : " + String.valueOf(val));
                         }
-                    }
-                    else {
+                    } else {
                         LOG.debug("Null value: " + ((ProfilePreference) a).name() + " is null.");
                     }
 
@@ -1000,7 +1039,7 @@ public class PreferenceHelper {
         }
 
         OutputStream outStream = new FileOutputStream(f);
-        props.store(outStream,"Warning: This file can contain server names, passwords, email addresses and other sensitive information.");
+        props.store(outStream, "Warning: This file can contain server names, passwords, email addresses and other sensitive information.");
 
     }
 

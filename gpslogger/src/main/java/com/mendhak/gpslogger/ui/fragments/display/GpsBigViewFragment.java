@@ -1,16 +1,16 @@
 /*******************************************************************************
  * This file is part of GPSLogger for Android.
- *
+ * <p/>
  * GPSLogger for Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
- *
+ * <p/>
  * GPSLogger for Android is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU General Public License
  * along with GPSLogger for Android.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.mendhak.gpslogger.R;
 import com.mendhak.gpslogger.common.EventBusHook;
 import com.mendhak.gpslogger.common.Session;
@@ -63,18 +64,17 @@ public class GpsBigViewFragment extends GenericViewFragment implements View.OnTo
             Toast.makeText(getActivity().getApplicationContext(), R.string.bigview_taptotoggle, Toast.LENGTH_SHORT).show();
         }
 
-
         return rootView;
     }
 
     @EventBusHook
-    public void onEventMainThread(ServiceEvents.LocationUpdate locationUpdate){
+    public void onEventMainThread(ServiceEvents.LocationUpdate locationUpdate) {
         displayLocationInfo(locationUpdate.location);
     }
 
     @EventBusHook
-    public void onEventMainThread(ServiceEvents.LoggingStatus loggingStatus){
-        if(loggingStatus.loggingStarted){
+    public void onEventMainThread(ServiceEvents.LoggingStatus loggingStatus) {
+        if (loggingStatus.loggingStarted) {
             TextView txtLat = (TextView) rootView.findViewById(R.id.bigview_text_lat);
             TextView txtLong = (TextView) rootView.findViewById(R.id.bigview_text_long);
             txtLat.setText("");
@@ -82,7 +82,7 @@ public class GpsBigViewFragment extends GenericViewFragment implements View.OnTo
         }
     }
 
-    public void displayLocationInfo(Location locationInfo){
+    public void displayLocationInfo(Location locationInfo) {
 
         TextView txtLat = (TextView) rootView.findViewById(R.id.bigview_text_lat);
         TextView txtLong = (TextView) rootView.findViewById(R.id.bigview_text_long);

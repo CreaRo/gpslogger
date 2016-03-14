@@ -1,95 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:key="gpslogger_preferences">
-
-
+    android:key="gpslogger_preferences">
 
     <com.mendhak.gpslogger.ui.components.CustomSwitchPreference
-        android:title="@string/startonbootup_title"
+        android:key="startonbootup"
         android:summary="@string/startonbootup_summary"
-        android:key="startonbootup"/>
+        android:title="@string/startonbootup_title" />
+
     <com.mendhak.gpslogger.ui.components.CustomSwitchPreference
-        android:title="@string/startonapplaunch_title"
+        android:key="startonapplaunch"
         android:summary="@string/startonapplaunch_summary"
-        android:key="startonapplaunch"/>
+        android:title="@string/startonapplaunch_title" />
 
     <com.mendhak.gpslogger.ui.components.CustomSwitchPreference
-        android:title="@string/display_imperial_title"
+        android:key="useImperial"
         android:summary="@string/display_imperial_summary"
-        android:key="useImperial"/>
+        android:title="@string/display_imperial_title" />
 
     <com.mendhak.gpslogger.ui.components.CustomSwitchPreference
-        android:title="@string/hide_notification_buttons"
-        android:summary="@string/hide_notification_buttons_summary"
         android:key="hide_notification_buttons"
-        >
-    </com.mendhak.gpslogger.ui.components.CustomSwitchPreference>
+        android:summary="@string/hide_notification_buttons_summary"
+        android:title="@string/hide_notification_buttons"></com.mendhak.gpslogger.ui.components.CustomSwitchPreference>
+
     <Preference
-        android:title="@string/enabledisablegps_title"
-        android:summary="@string/enabledisablegps_summary"
+        android:defaultValue="false"
         android:key="enableDisableGps"
-        android:defaultValue="false"/>
+        android:summary="@string/enabledisablegps_summary"
+        android:title="@string/enabledisablegps_title" />
 
     <com.mendhak.gpslogger.ui.components.CustomSwitchPreference
-        android:title="@string/debuglog_title"
-        android:summary="@string/debuglog_summary"
+        android:defaultValue="false"
         android:key="debugtofile"
-        android:defaultValue="false"/>
+        android:summary="@string/debuglog_summary"
+        android:title="@string/debuglog_title" />
 
     <Preference
-        android:title="@string/debuglog_attach_to_email"
-        android:summary="@string/debuglog_attach_to_email_summary"
+        android:enabled="true"
         android:key="debuglogtoemail"
-        android:enabled="true"/>
-
-
+        android:summary="@string/debuglog_attach_to_email_summary"
+        android:title="@string/debuglog_attach_to_email" />
 
     <Preference android:key="about_version_info"></Preference>
 
     <Preference
         android:key="gpslogger_privacypolicy"
         android:title="@string/privacy_policy">
-        <intent android:action="android.intent.action.VIEW"
-                android:data="https://github.com/mendhak/gpslogger/blob/master/assets/text/privacypolicy.md#privacy-policy"/>
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://github.com/mendhak/gpslogger/blob/master/assets/text/privacypolicy.md#privacy-policy" />
     </Preference>
 
     <Preference
+        android:icon="@drawable/coffee"
         android:key="gpsloggerdonate_link"
-        android:title="@string/tip_coffee"
-        android:icon="@drawable/coffee" >
-        <intent android:action="android.intent.action.VIEW"
-                android:data="market://details?id=com.mendhak.gpsloggerpro" />
+        android:title="@string/tip_coffee">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="market://details?id=com.mendhak.gpsloggerpro" />
     </Preference>
 
     <Preference
+        android:icon="@drawable/gpsvisualizer"
         android:key="gpsvisualizer_link"
-        android:title="@string/pref_gpsvisualizer"
         android:summary=""
-        android:icon="@drawable/gpsvisualizer"/>
+        android:title="@string/pref_gpsvisualizer" />
 
     <Preference
-        android:key="gpslogger_repo"
-        android:title="Source Code"
         android:icon="@drawable/github"
-        >
-        <intent android:action="android.intent.action.VIEW"
-                android:data="https://github.com/mendhak/gpslogger/"/>
+        android:key="gpslogger_repo"
+        android:title="Source Code">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://github.com/mendhak/gpslogger/" />
     </Preference>
 
     <Preference
-        android:key="gpslogger_crowdin"
-        android:title="Translations"
         android:icon="@drawable/translate"
-        >
-        <intent android:action="android.intent.action.VIEW"
-                android:data="https://crowdin.com/project/gpslogger-for-android"/>
+        android:key="gpslogger_crowdin"
+        android:title="Translations">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://crowdin.com/project/gpslogger-for-android" />
     </Preference>
 
     <Preference
         android:key="gpslogger_thirdparty"
         android:title="Open Source Libraries">
-        <intent android:action="android.intent.action.VIEW"
-                android:data="https://github.com/mendhak/gpslogger/blob/master/assets/text/opensource.md#open-source-libraries"/>
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://github.com/mendhak/gpslogger/blob/master/assets/text/opensource.md#open-source-libraries" />
     </Preference>
 
 

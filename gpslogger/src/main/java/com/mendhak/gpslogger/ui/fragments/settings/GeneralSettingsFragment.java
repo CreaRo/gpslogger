@@ -1,16 +1,16 @@
 /*******************************************************************************
  * This file is part of GPSLogger for Android.
- *
+ * <p/>
  * GPSLogger for Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
- *
+ * <p/>
  * GPSLogger for Android is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU General Public License
  * along with GPSLogger for Android.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -26,6 +26,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.widget.Toast;
+
 import com.mendhak.gpslogger.R;
 import com.mendhak.gpslogger.loggers.Files;
 
@@ -77,7 +78,7 @@ public class GeneralSettingsFragment extends PreferenceFragment implements Prefe
             return true;
         }
 
-        if(preference.getKey().equals("debuglogtoemail")){
+        if (preference.getKey().equals("debuglogtoemail")) {
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
             intent.putExtra(Intent.EXTRA_SUBJECT, "GPSLogger Debug Log");
@@ -98,14 +99,13 @@ public class GeneralSettingsFragment extends PreferenceFragment implements Prefe
                 Uri uri = Uri.parse("file://" + file);
                 intent.putExtra(Intent.EXTRA_STREAM, uri);
                 startActivity(Intent.createChooser(intent, "Send debug log"));
-            }
-            else {
+            } else {
                 Toast.makeText(getActivity(), "debuglog.txt not found", Toast.LENGTH_LONG).show();
             }
 
         }
 
-        if(preference.getKey().equalsIgnoreCase("gpsvisualizer_link")){
+        if (preference.getKey().equalsIgnoreCase("gpsvisualizer_link")) {
             Intent intent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse("market://details?id=com.mendhak.gpsvisualizer"));
             startActivity(intent);
@@ -117,10 +117,9 @@ public class GeneralSettingsFragment extends PreferenceFragment implements Prefe
 
             if (aboutClickCounter == 3) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://dQw4w9WgXcQ"));
-                intent.putExtra("force_fullscreen",true);
+                intent.putExtra("force_fullscreen", true);
                 startActivity(intent);
             }
-
         }
         return false;
     }

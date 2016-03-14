@@ -1,16 +1,16 @@
 /*******************************************************************************
  * This file is part of GPSLogger for Android.
- *
+ * <p/>
  * GPSLogger for Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
- *
+ * <p/>
  * GPSLogger for Android is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU General Public License
  * along with GPSLogger for Android.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+
 import com.mendhak.gpslogger.MainPreferenceActivity;
 import com.mendhak.gpslogger.R;
 import com.mendhak.gpslogger.common.Strings;
@@ -45,13 +46,13 @@ public class UploadSettingsFragment extends PreferenceFragment implements Prefer
 
         addPreferencesFromResource(R.xml.pref_upload);
 
-        Preference osmSetupPref  = findPreference("osm_setup");
+        Preference osmSetupPref = findPreference("osm_setup");
         Preference autoEmailPref = findPreference("autoemail_setup");
-        Preference dropboxPref   = findPreference("dropbox_setup");
-        Preference gdocsPref     = findPreference("gdocs_setup");
-        Preference opengtsPref   = findPreference("opengts_setup");
-        Preference autoftpPref   = findPreference("autoftp_setup");
-        Preference ownCloudPref  = findPreference("owncloud_setup");
+        Preference dropboxPref = findPreference("dropbox_setup");
+        Preference gdocsPref = findPreference("gdocs_setup");
+        Preference opengtsPref = findPreference("opengts_setup");
+        Preference autoftpPref = findPreference("autoftp_setup");
+        Preference ownCloudPref = findPreference("owncloud_setup");
 
 
         osmSetupPref.setOnPreferenceClickListener(this);
@@ -73,31 +74,31 @@ public class UploadSettingsFragment extends PreferenceFragment implements Prefer
             launchFragment = MainPreferenceActivity.PREFERENCE_FRAGMENTS.OSM;
         }
 
-        if(preference.getKey().equalsIgnoreCase("autoemail_setup")){
+        if (preference.getKey().equalsIgnoreCase("autoemail_setup")) {
             launchFragment = MainPreferenceActivity.PREFERENCE_FRAGMENTS.EMAIL;
         }
 
-        if(preference.getKey().equalsIgnoreCase("dropbox_setup")){
+        if (preference.getKey().equalsIgnoreCase("dropbox_setup")) {
             launchFragment = MainPreferenceActivity.PREFERENCE_FRAGMENTS.DROPBOX;
         }
 
-        if(preference.getKey().equalsIgnoreCase("gdocs_setup")){
+        if (preference.getKey().equalsIgnoreCase("gdocs_setup")) {
             launchFragment = MainPreferenceActivity.PREFERENCE_FRAGMENTS.GDOCS;
         }
 
-        if(preference.getKey().equalsIgnoreCase("opengts_setup")){
+        if (preference.getKey().equalsIgnoreCase("opengts_setup")) {
             launchFragment = MainPreferenceActivity.PREFERENCE_FRAGMENTS.OPENGTS;
         }
 
-        if(preference.getKey().equalsIgnoreCase("autoftp_setup")){
+        if (preference.getKey().equalsIgnoreCase("autoftp_setup")) {
             launchFragment = MainPreferenceActivity.PREFERENCE_FRAGMENTS.FTP;
         }
 
-        if(preference.getKey().equalsIgnoreCase("owncloud_setup")) {
+        if (preference.getKey().equalsIgnoreCase("owncloud_setup")) {
             launchFragment = MainPreferenceActivity.PREFERENCE_FRAGMENTS.OWNCLOUD;
         }
 
-        if(!Strings.isNullOrEmpty(launchFragment)){
+        if (!Strings.isNullOrEmpty(launchFragment)) {
             Intent intent = new Intent(getActivity(), MainPreferenceActivity.class);
             intent.putExtra("preference_fragment", launchFragment);
             startActivity(intent);

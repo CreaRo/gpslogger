@@ -1,16 +1,16 @@
 /*******************************************************************************
  * This file is part of GPSLogger for Android.
- *
+ * <p/>
  * GPSLogger for Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
- *
+ * <p/>
  * GPSLogger for Android is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU General Public License
  * along with GPSLogger for Android.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -33,6 +33,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.dd.processbutton.iml.ActionProcessButton;
 import com.mendhak.gpslogger.R;
 import com.mendhak.gpslogger.common.EventBusHook;
@@ -42,6 +43,7 @@ import com.mendhak.gpslogger.common.Strings;
 import com.mendhak.gpslogger.common.events.ServiceEvents;
 import com.mendhak.gpslogger.common.slf4j.Logs;
 import com.mendhak.gpslogger.loggers.Files;
+
 import org.slf4j.Logger;
 
 import java.text.NumberFormat;
@@ -91,7 +93,7 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
         setImageTooltips();
         showPreferencesSummary();
 
-        actionButton = (ActionProcessButton)rootView.findViewById(R.id.btnActionProcess);
+        actionButton = (ActionProcessButton) rootView.findViewById(R.id.btnActionProcess);
         actionButton.setMode(ActionProcessButton.Mode.ENDLESS);
         actionButton.setBackgroundColor(ContextCompat.getColor(context, (R.color.accentColor)));
 
@@ -108,25 +110,23 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
         }
 
 
-
-
         return rootView;
     }
 
-    private void setActionButtonStart(){
+    private void setActionButtonStart() {
         actionButton.setText(R.string.btn_start_logging);
         actionButton.setBackgroundColor(ContextCompat.getColor(context, R.color.accentColor));
         actionButton.setAlpha(0.8f);
     }
 
-    private void setActionButtonStop(){
+    private void setActionButtonStop() {
         actionButton.setText(R.string.btn_stop_logging);
-        actionButton.setBackgroundColor( ContextCompat.getColor(context, R.color.accentColorComplementary));
+        actionButton.setBackgroundColor(ContextCompat.getColor(context, R.color.accentColorComplementary));
         actionButton.setAlpha(0.8f);
     }
 
     private void showPreferencesSummary() {
-        showCurrentFileName(Session.getCurrentFileName());
+        showCurrentFileName(Session.getCurrentFileName(getActivity()));
 
 
         ImageView imgGpx = (ImageView) rootView.findViewById(R.id.simpleview_imgGpx);
@@ -184,10 +184,10 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
         }
 
         txtFilename.setVisibility(View.VISIBLE);
-        txtFilename.setText(Html.fromHtml("<em>" + preferenceHelper.getGpsLoggerFolder() + "/<strong><br />" + Session.getCurrentFileName() + "</strong></em>"));
+        txtFilename.setText(Html.fromHtml("<em>" + preferenceHelper.getGpsLoggerFolder() + "/<strong><br />" + Session.getCurrentFileName(getActivity()) + "</strong></em>"));
 
         Files.setFileExplorerLink(txtFilename,
-                Html.fromHtml("<em><font color='blue'><u>" + preferenceHelper.getGpsLoggerFolder() + "</u></font>" + "/<strong><br />" + Session.getCurrentFileName() + "</strong></em>"),
+                Html.fromHtml("<em><font color='blue'><u>" + preferenceHelper.getGpsLoggerFolder() + "</u></font>" + "/<strong><br />" + Session.getCurrentFileName(getActivity()) + "</strong></em>"),
                 preferenceHelper.getGpsLoggerFolder(),
                 context);
 
@@ -200,19 +200,19 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
         Inactive
     }
 
-    private void clearColor(ImageView imgView){
+    private void clearColor(ImageView imgView) {
         setColor(imgView, IconColorIndicator.Inactive);
     }
 
-    private void setColor(ImageView imgView, IconColorIndicator colorIndicator){
+    private void setColor(ImageView imgView, IconColorIndicator colorIndicator) {
         imgView.clearColorFilter();
 
-        if(colorIndicator == IconColorIndicator.Inactive){
+        if (colorIndicator == IconColorIndicator.Inactive) {
             return;
         }
 
         int color = -1;
-        switch(colorIndicator){
+        switch (colorIndicator) {
             case Bad:
                 color = Color.parseColor("#FFEEEE");
                 break;
@@ -269,10 +269,9 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
     public void onResume() {
         showPreferencesSummary();
 
-        if(Session.isStarted()){
+        if (Session.isStarted()) {
             setActionButtonStop();
-        }
-        else {
+        } else {
             setActionButtonStart();
         }
         super.onResume();
@@ -286,40 +285,39 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
 
 
     @EventBusHook
-    public void onEventMainThread(ServiceEvents.LocationUpdate locationUpdate){
+    public void onEventMainThread(ServiceEvents.LocationUpdate locationUpdate) {
         displayLocationInfo(locationUpdate.location);
     }
 
     @EventBusHook
-    public void onEventMainThread(ServiceEvents.SatellitesVisible satellitesVisible){
+    public void onEventMainThread(ServiceEvents.SatellitesVisible satellitesVisible) {
         setSatelliteCount(satellitesVisible.satelliteCount);
     }
 
     @EventBusHook
-    public void onEventMainThread(ServiceEvents.WaitingForLocation waitingForLocation){
+    public void onEventMainThread(ServiceEvents.WaitingForLocation waitingForLocation) {
         onWaitingForLocation(waitingForLocation.waiting);
     }
 
     @EventBusHook
-    public void onEventMainThread(ServiceEvents.LoggingStatus loggingStatus){
+    public void onEventMainThread(ServiceEvents.LoggingStatus loggingStatus) {
 
-        if(loggingStatus.loggingStarted){
+        if (loggingStatus.loggingStarted) {
             showPreferencesSummary();
             clearLocationDisplay();
             setActionButtonStop();
-        }
-        else {
+        } else {
             setSatelliteCount(-1);
             setActionButtonStart();
         }
     }
 
     @EventBusHook
-    public void onEventMainThread(ServiceEvents.FileNamed fileNamed){
+    public void onEventMainThread(ServiceEvents.FileNamed fileNamed) {
         showCurrentFileName(fileNamed.newFileName);
     }
 
-    public void displayLocationInfo(Location locationInfo){
+    public void displayLocationInfo(Location locationInfo) {
         showPreferencesSummary();
 
         NumberFormat nf = NumberFormat.getInstance();
@@ -352,7 +350,7 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
             }
         }
 
-        ImageView imgAltitude = (ImageView)rootView.findViewById(R.id.simpleview_imgAltitude);
+        ImageView imgAltitude = (ImageView) rootView.findViewById(R.id.simpleview_imgAltitude);
         clearColor(imgAltitude);
 
         if (locationInfo.hasAltitude()) {
@@ -362,7 +360,7 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
             txtAltitude.setText(Strings.getDistanceDisplay(getActivity(), locationInfo.getAltitude(), preferenceHelper.shouldDisplayImperialUnits()));
         }
 
-        ImageView imgSpeed = (ImageView)rootView.findViewById(R.id.simpleview_imgSpeed);
+        ImageView imgSpeed = (ImageView) rootView.findViewById(R.id.simpleview_imgSpeed);
         clearColor(imgSpeed);
 
         if (locationInfo.hasSpeed()) {
@@ -411,26 +409,26 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
         EditText txtLatitude = (EditText) rootView.findViewById(R.id.simple_lat_text);
         txtLatitude.setText("");
 
-        ImageView imgAccuracy = (ImageView)rootView.findViewById(R.id.simpleview_imgAccuracy);
+        ImageView imgAccuracy = (ImageView) rootView.findViewById(R.id.simpleview_imgAccuracy);
         clearColor(imgAccuracy);
 
         TextView txtAccuracy = (TextView) rootView.findViewById(R.id.simpleview_txtAccuracy);
         txtAccuracy.setText("");
         txtAccuracy.setTextColor(ContextCompat.getColor(context, android.R.color.black));
 
-        ImageView imgAltitude = (ImageView)rootView.findViewById(R.id.simpleview_imgAltitude);
+        ImageView imgAltitude = (ImageView) rootView.findViewById(R.id.simpleview_imgAltitude);
         clearColor(imgAltitude);
 
         TextView txtAltitude = (TextView) rootView.findViewById(R.id.simpleview_txtAltitude);
         txtAltitude.setText("");
 
-        ImageView imgDirection = (ImageView)rootView.findViewById(R.id.simpleview_imgDirection);
+        ImageView imgDirection = (ImageView) rootView.findViewById(R.id.simpleview_imgDirection);
         clearColor(imgDirection);
 
         TextView txtDirection = (TextView) rootView.findViewById(R.id.simpleview_txtDirection);
         txtDirection.setText("");
 
-        ImageView imgSpeed = (ImageView)rootView.findViewById(R.id.simpleview_imgSpeed);
+        ImageView imgSpeed = (ImageView) rootView.findViewById(R.id.simpleview_imgSpeed);
         clearColor(imgSpeed);
 
         TextView txtSpeed = (TextView) rootView.findViewById(R.id.simpleview_txtSpeed);
@@ -448,12 +446,11 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
     }
 
 
-
     public void setSatelliteCount(int count) {
         ImageView imgSatelliteCount = (ImageView) rootView.findViewById(R.id.simpleview_imgSatelliteCount);
         TextView txtSatelliteCount = (TextView) rootView.findViewById(R.id.simpleview_txtSatelliteCount);
 
-        if(count > -1) {
+        if (count > -1) {
             setColor(imgSatelliteCount, IconColorIndicator.Good);
 
             AlphaAnimation fadeIn = new AlphaAnimation(0.6f, 1.0f);
@@ -461,8 +458,7 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
             fadeIn.setFillAfter(true);
             txtSatelliteCount.startAnimation(fadeIn);
             txtSatelliteCount.setText(String.valueOf(count));
-        }
-        else {
+        } else {
             clearColor(imgSatelliteCount);
             txtSatelliteCount.setText("");
         }
@@ -473,17 +469,16 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
 
         LOG.debug(inProgress + "");
 
-        if(!Session.isStarted()){
+        if (!Session.isStarted()) {
             actionButton.setProgress(0);
             setActionButtonStart();
             return;
         }
 
-        if(inProgress){
+        if (inProgress) {
             actionButton.setProgress(1);
             setActionButtonStop();
-        }
-        else {
+        } else {
             actionButton.setProgress(0);
             setActionButtonStop();
         }

@@ -1,21 +1,23 @@
 /*******************************************************************************
  * This file is part of GPSLogger for Android.
- *
+ * <p/>
  * GPSLogger for Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
- *
+ * <p/>
  * GPSLogger for Android is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU General Public License
  * along with GPSLogger for Android.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
 package com.mendhak.gpslogger.loggers.nmea;
+
+import android.content.Context;
 
 import com.mendhak.gpslogger.common.PreferenceHelper;
 import com.mendhak.gpslogger.common.RejectionHandler;
@@ -43,14 +45,14 @@ public class NmeaFileLogger {
         this.fileName = fileName;
     }
 
-    public void write(long timestamp, String nmeaSentence)  {
+    public void write(long timestamp, String nmeaSentence, Context context) {
 
         File gpxFolder = new File(preferenceHelper.getGpsLoggerFolder());
         if (!gpxFolder.exists()) {
             gpxFolder.mkdirs();
         }
 
-        File nmeaFile = new File(gpxFolder.getPath(), Session.getCurrentFileName() + ".nmea");
+        File nmeaFile = new File(gpxFolder.getPath(), Session.getCurrentFileName(context) + ".nmea");
 
         if (!nmeaFile.exists()) {
             try {

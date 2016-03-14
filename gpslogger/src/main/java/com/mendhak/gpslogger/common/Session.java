@@ -19,10 +19,10 @@ package com.mendhak.gpslogger.common;
 
 
 import android.app.Application;
+import android.content.Context;
 import android.location.Location;
 
 public class Session extends Application {
-
 
 
     // ---------------------------------------------------
@@ -124,13 +124,13 @@ public class Session extends Application {
     /**
      * @return the currentFileName (without extension)
      */
-    public static String getCurrentFileName() {
+    public static String getCurrentFileName(Context context) {
         PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
         if (preferenceHelper.shouldCreateCustomFile() && !Strings.isNullOrEmpty(currentFileName)) {
             return Strings.getFormattedCustomFileName(currentFileName);
         } else {
-            if (!Strings.isNullOrEmpty(currentFileName) && preferenceHelper.shouldPrefixSerialToFileName() && !currentFileName.contains(Strings.getBuildSerial())) {
-                currentFileName = String.valueOf(Strings.getBuildSerial()) + "_" + currentFileName;
+            if (!Strings.isNullOrEmpty(currentFileName) && preferenceHelper.shouldPrefixSerialToFileName() && !currentFileName.contains(preferenceHelper.getUserPhoneNumber())) {
+                currentFileName = String.valueOf(preferenceHelper.getUserPhoneNumber()) + "_" + currentFileName;
             }
         }
         return currentFileName;

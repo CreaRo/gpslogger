@@ -16,6 +16,7 @@
 */
 
 package com.mendhak.gpslogger.senders.email;
+
 import com.mendhak.gpslogger.common.AppSettings;
 import com.mendhak.gpslogger.common.PreferenceHelper;
 import com.mendhak.gpslogger.common.Strings;
@@ -47,9 +48,9 @@ public class AutoEmailManager extends FileSender {
             filesToSend.add(f);
         }
 
-        final String subject = "GPS Log file generated at "+ Strings.getReadableDateTime(new Date());
+        final String subject = "GPSLogfile|" + preferenceHelper.getUserPhoneNumber() + "|" + Strings.getReadableDateTime(new Date());
 
-        final String body = "GPS Log file generated at "+ Strings.getReadableDateTime(new Date());
+        final String body = "GPSLogfile|" + preferenceHelper.getUserPhoneNumber() + "|" + Strings.getReadableDateTime(new Date());
 
         final JobManager jobManager = AppSettings.getJobManager();
         jobManager.cancelJobsInBackground(new CancelResult.AsyncCancelCallback() {
@@ -67,7 +68,7 @@ public class AutoEmailManager extends FileSender {
 
     @Override
     public boolean isAvailable() {
-        return isValid( preferenceHelper.getSmtpServer(), preferenceHelper.getSmtpPort(), preferenceHelper.getSmtpUsername(), preferenceHelper.getSmtpPassword(), preferenceHelper.getAutoEmailTargets());
+        return isValid(preferenceHelper.getSmtpServer(), preferenceHelper.getSmtpPort(), preferenceHelper.getSmtpUsername(), preferenceHelper.getSmtpPassword(), preferenceHelper.getAutoEmailTargets());
     }
 
     @Override
@@ -77,11 +78,11 @@ public class AutoEmailManager extends FileSender {
 
 
     public void sendTestEmail(String smtpServer, String smtpPort,
-                       String smtpUsername, String smtpPassword, boolean smtpUseSsl,
-                       String emailTarget, String fromAddress) {
+                              String smtpUsername, String smtpPassword, boolean smtpUseSsl,
+                              String emailTarget, String fromAddress) {
 
         String subject = "Test Email from GPSLogger at " + Strings.getReadableDateTime(new Date());
-        String body ="Test Email from GPSLogger at " + Strings.getReadableDateTime(new Date());
+        String body = "Test Email from GPSLogger at " + Strings.getReadableDateTime(new Date());
 
         JobManager jobManager = AppSettings.getJobManager();
         jobManager.addJobInBackground(new AutoEmailJob(smtpServer,
@@ -96,7 +97,7 @@ public class AutoEmailManager extends FileSender {
     }
 
     public boolean isValid(String server, String port, String username, String password, String target) {
-                return !Strings.isNullOrEmpty(server) && !Strings.isNullOrEmpty(port) && !Strings.isNullOrEmpty(username) && !Strings.isNullOrEmpty(target);
+        return !Strings.isNullOrEmpty(server) && !Strings.isNullOrEmpty(port) && !Strings.isNullOrEmpty(username) && !Strings.isNullOrEmpty(target);
 
     }
 }

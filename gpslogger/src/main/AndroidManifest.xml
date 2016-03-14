@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.mendhak.gpslogger"
-    android:installLocation="auto" >
+    android:installLocation="auto">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
@@ -23,14 +24,14 @@
         android:icon="@drawable/gpsloggericon3"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
-        tools:replace="android:theme" >
+        tools:replace="android:theme">
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
         <service
             android:name=".GpsLoggingService"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.mendhak.gpslogger.GpsLoggingService" />
             </intent-filter>
@@ -42,17 +43,11 @@
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:uiOptions="splitActionBarWhenNarrow"
-            android:windowSoftInputMode="adjustNothing" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:windowSoftInputMode="adjustNothing"></activity>
         <activity
             android:name=".MainPreferenceActivity"
             android:label="@string/settings_screen_name"
-            android:parentActivityName=".GpsMainActivity" >
+            android:parentActivityName=".GpsMainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mendhak.gpslogger.GpsMainActivity" />
@@ -73,7 +68,7 @@
             android:name=".Faqtivity"
             android:label="@string/faq_screen_title"
             android:launchMode="singleTask"
-            android:parentActivityName=".GpsMainActivity" >
+            android:parentActivityName=".GpsMainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mendhak.gpslogger.GpsMainActivity" />
@@ -82,7 +77,7 @@
             android:name="com.dropbox.client2.android.AuthActivity"
             android:configChanges="orientation|keyboard"
             android:launchMode="singleTask"
-            android:parentActivityName=".GpsMainActivity" >
+            android:parentActivityName=".GpsMainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mendhak.gpslogger.GpsMainActivity" />
@@ -101,7 +96,7 @@
         </activity>
         <activity
             android:name=".shortcuts.ShortcutCreate"
-            android:theme="@style/Theme.AppCompat.Translucent" >
+            android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
 
@@ -110,14 +105,14 @@
         </activity>
         <activity
             android:name=".shortcuts.ShortcutStart"
-            android:theme="@style/Theme.AppCompat.Translucent" >
+            android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
         <activity
             android:name=".shortcuts.ShortcutStop"
-            android:theme="@style/Theme.AppCompat.Translucent" >
+            android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
@@ -126,7 +121,7 @@
         <receiver
             android:name=".StartupReceiver"
             android:enabled="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED" >
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
 
@@ -140,7 +135,7 @@
             android:name=".NotificationAnnotationActivity"
             android:excludeFromRecents="true"
             android:label=""
-            android:theme="@style/Theme.AppCompat.Translucent" >
+            android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="android.intent.category.DEFAULT" />
 
@@ -154,7 +149,13 @@
             android:exported="true"
             tools:ignore="ExportedContentProvider" />
 
-        <activity android:name=".SimpleMainActivity" >
+        <activity android:name=".SimpleMainActivity"></activity>
+        <activity android:name=".ui.InitActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 
