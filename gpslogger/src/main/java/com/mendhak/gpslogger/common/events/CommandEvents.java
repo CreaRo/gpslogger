@@ -16,7 +16,8 @@ public class CommandEvents {
      */
     public static class RequestStartStop {
         public boolean start;
-        public RequestStartStop(boolean start){
+
+        public RequestStartStop(boolean start) {
             this.start = start;
         }
     }
@@ -26,7 +27,8 @@ public class CommandEvents {
      */
     public static class AutoSend {
         public String formattedFileName;
-        public AutoSend(@Nullable String formattedFileName){
+
+        public AutoSend(@Nullable String formattedFileName) {
             this.formattedFileName = formattedFileName;
         }
     }
@@ -36,6 +38,7 @@ public class CommandEvents {
      */
     public static class Annotate {
         public String annotation;
+
         public Annotate(String annotation) {
             this.annotation = annotation;
         }

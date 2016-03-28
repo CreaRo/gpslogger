@@ -482,7 +482,6 @@ public class PreferenceHelper {
         prefs.edit().putBoolean(PreferenceNames.HIDE_NOTIFICATION_BUTTONS, b).apply();
     }
 
-
     /**
      * Whether to display certain values using imperial units
      */

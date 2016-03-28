@@ -48,10 +48,6 @@ public class MainPreferenceActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-
-
-
-
         String whichFragment = PREFERENCE_FRAGMENTS.GENERAL;
 
         if(getIntent().getExtras() != null) {

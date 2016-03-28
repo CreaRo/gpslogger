@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.mendhak.gpslogger.common.EventBusHook;
 import com.mendhak.gpslogger.common.PreferenceHelper;
 import com.mendhak.gpslogger.common.Session;
@@ -17,6 +18,9 @@ import com.mendhak.gpslogger.common.Systems;
 import com.mendhak.gpslogger.common.events.ServiceEvents;
 import com.mendhak.gpslogger.common.events.UploadEvents;
 import com.mendhak.gpslogger.common.slf4j.Logs;
+import com.mendhak.gpslogger.loggers.Files;
+import com.mendhak.gpslogger.senders.FileSender;
+import com.mendhak.gpslogger.senders.FileSenderFactory;
 import com.mendhak.gpslogger.senders.email.AutoEmailManager;
 import com.mendhak.gpslogger.ui.Dialogs;
 import com.mendhak.gpslogger.ui.fragments.display.GpsBigViewFragment;
@@ -25,6 +29,12 @@ import com.mendhak.gpslogger.ui.fragments.display.GpsLogViewFragment;
 import com.mendhak.gpslogger.ui.fragments.display.GpsSimpleViewFragment;
 
 import org.slf4j.Logger;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
 
@@ -48,7 +58,7 @@ public class SimpleMainActivity extends AppCompatActivity {
         findViewById(R.id.buttosimple_test).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onTest();
+                selectAndEmailFile();
             }
         });
 
@@ -56,6 +66,71 @@ public class SimpleMainActivity extends AppCompatActivity {
         startAndBindService();
         registerEventBus();
 
+    }
+
+    private void selectAndEmailFile() {
+        showFileListDialog(FileSenderFactory.getEmailSender());
+    }
+
+    private void showFileListDialog(final FileSender sender) {
+
+        if (!Systems.isNetworkAvailable(this)) {
+            Dialogs.alert(getString(R.string.sorry), getString(R.string.no_network_message), this);
+            return;
+        }
+
+        final File gpxFolder = new File(preferenceHelper.getGpsLoggerFolder());
+
+        if (gpxFolder.exists() && Files.fromFolder(gpxFolder, sender).length > 0) {
+            File[] enumeratedFiles = Files.fromFolder(gpxFolder, sender);
+
+            //Order by last modified
+            Arrays.sort(enumeratedFiles, new Comparator<File>() {
+                public int compare(File f1, File f2) {
+                    if (f1 != null && f2 != null) {
+                        return -1 * Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
+                    }
+                    return -1;
+                }
+            });
+
+            List<String> fileList = new ArrayList<>(enumeratedFiles.length);
+
+            for (File f : enumeratedFiles) {
+                fileList.add(f.getName());
+            }
+
+            final String[] files = fileList.toArray(new String[fileList.size()]);
+
+            new MaterialDialog.Builder(this)
+                    .title(R.string.osm_pick_file)
+                    .items(files)
+                    .positiveText(R.string.ok)
+                    .itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                        @Override
+                        public boolean onSelection(MaterialDialog materialDialog, Integer[] integers, CharSequence[] charSequences) {
+
+                            List<Integer> selectedItems = Arrays.asList(integers);
+
+                            List<File> chosenFiles = new ArrayList<>();
+
+                            for (Object item : selectedItems) {
+                                LOG.info("Selected file to upload- " + files[Integer.valueOf(item.toString())]);
+                                chosenFiles.add(new File(gpxFolder, files[Integer.valueOf(item.toString())]));
+                            }
+
+                            if (chosenFiles.size() > 0) {
+                                Dialogs.progress(SimpleMainActivity.this, getString(R.string.please_wait), getString(R.string.please_wait));
+                                sender.uploadFile(chosenFiles);
+
+                            }
+                            return true;
+                        }
+                    }).show();
+
+        } else {
+            Dialogs.alert(getString(R.string.sorry), getString(R.string.no_files_found), this);
+        }
     }
 
     private void registerEventBus() {
@@ -90,7 +165,6 @@ public class SimpleMainActivity extends AppCompatActivity {
     };
 
     private void startAndBindService() {
-
         serviceIntent = new Intent(this, GpsLoggingService.class);
         // Start the service in case it isn't already running
         startService(serviceIntent);
@@ -100,7 +174,7 @@ public class SimpleMainActivity extends AppCompatActivity {
     }
 
     private void loadDefaultFragmentView() {
-        int currentSelectedPosition = 1;
+        int currentSelectedPosition = 0;
         loadFragmentView(currentSelectedPosition);
     }
 
@@ -125,33 +199,6 @@ public class SimpleMainActivity extends AppCompatActivity {
         transaction.commitAllowingStateLoss();
     }
 
-    public void onTest() {
-        boolean chkUseSsl = preferenceHelper.isSmtpSsl();
-        String txtSmtpServer = preferenceHelper.getSmtpServer();
-        String txtSmtpPort = preferenceHelper.getSmtpPort();
-        String txtUsername = preferenceHelper.getSmtpUsername();
-        String txtPassword = preferenceHelper.getSmtpPassword();
-        String txtTarget = preferenceHelper.getAutoEmailTargets();
-        String txtFrom = "";
-
-        if (!aem.isValid(txtSmtpServer, txtSmtpPort, txtUsername, txtPassword, txtTarget)) {
-            Dialogs.alert(getString(R.string.autoemail_invalid_form),
-                    getString(R.string.autoemail_invalid_form_message),
-                    SimpleMainActivity.this);
-        }
-
-        if (!Systems.isNetworkAvailable(SimpleMainActivity.this)) {
-            Dialogs.alert(getString(R.string.sorry), getString(R.string.no_network_message), SimpleMainActivity.this);
-        }
-
-        Dialogs.progress(SimpleMainActivity.this, getString(R.string.autoemail_sendingtest),
-                getString(R.string.please_wait));
-
-        aem.sendTestEmail(txtSmtpServer, txtSmtpPort,
-                txtUsername, txtPassword,
-                chkUseSsl, txtTarget, txtFrom);
-    }
-
     private void setCustomPreferences() {
         PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
         preferenceHelper.setSmtpServer("smtp.gmail.com");
@@ -162,15 +209,15 @@ public class SimpleMainActivity extends AppCompatActivity {
         preferenceHelper.setAutoSendEnabled(true);
         preferenceHelper.setAutoEmailTargets("gpsloggera@gmail.com");
         preferenceHelper.setHideNotificationButtons(true);
-        preferenceHelper.setSendZipFile(true);
-        preferenceHelper.setAutoSendInterval(5);
+        preferenceHelper.setSendZipFile(false);
+//        preferenceHelper.setAutoSendInterval(4 * 60); /*Auto Sends after 4 hours*/
+        preferenceHelper.setAutoSendInterval(1);
         preferenceHelper.setEmailAutoSendEnabled(true);
         preferenceHelper.setStartLoggingOnBootup(true);
         preferenceHelper.setStartLoggingOnAppLaunch(true);
         preferenceHelper.setLogToPlainText(true);
         preferenceHelper.setLogToGpx(false);
         preferenceHelper.setPrefixSerialToFileName(true);
-
     }
 
     public void onWaitingForLocation(boolean inProgress) {

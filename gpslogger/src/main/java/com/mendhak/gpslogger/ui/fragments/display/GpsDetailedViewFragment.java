@@ -1,16 +1,16 @@
 /*******************************************************************************
  * This file is part of GPSLogger for Android.
- *
+ * <p/>
  * GPSLogger for Android is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2 of the License, or
  * (at your option) any later version.
- *
+ * <p/>
  * GPSLogger for Android is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p/>
  * You should have received a copy of the GNU General Public License
  * along with GPSLogger for Android.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.dd.processbutton.iml.ActionProcessButton;
 import com.google.android.gms.location.DetectedActivity;
 import com.mendhak.gpslogger.R;
@@ -39,6 +40,7 @@ import com.mendhak.gpslogger.loggers.FileLogger;
 import com.mendhak.gpslogger.loggers.FileLoggerFactory;
 import com.mendhak.gpslogger.loggers.Files;
 import com.mendhak.gpslogger.senders.FileSenderFactory;
+
 import org.slf4j.Logger;
 
 import java.text.DateFormat;
@@ -75,8 +77,8 @@ public class GpsDetailedViewFragment extends GenericViewFragment {
 
         rootView = inflater.inflate(R.layout.fragment_detailed_view, container, false);
 
-        actionButton = (ActionProcessButton)rootView.findViewById(R.id.btnActionProcess);
-        actionButton.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.accentColor ));
+        actionButton = (ActionProcessButton) rootView.findViewById(R.id.btnActionProcess);
+        actionButton.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.accentColor));
 
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,13 +98,13 @@ public class GpsDetailedViewFragment extends GenericViewFragment {
     }
 
 
-    private void setActionButtonStart(){
+    private void setActionButtonStart() {
         actionButton.setText(R.string.btn_start_logging);
-        actionButton.setBackgroundColor( ContextCompat.getColor(getActivity(), R.color.accentColor));
+        actionButton.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.accentColor));
         actionButton.setAlpha(0.8f);
     }
 
-    private void setActionButtonStop(){
+    private void setActionButtonStop() {
         actionButton.setText(R.string.btn_stop_logging);
         actionButton.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.accentColorComplementary));
         actionButton.setAlpha(0.8f);
@@ -118,10 +120,9 @@ public class GpsDetailedViewFragment extends GenericViewFragment {
     @Override
     public void onResume() {
 
-        if(Session.isStarted()){
+        if (Session.isStarted()) {
             setActionButtonStop();
-        }
-        else {
+        } else {
             setActionButtonStart();
         }
 
@@ -192,7 +193,7 @@ public class GpsDetailedViewFragment extends GenericViewFragment {
 
             TextView txtTargets = (TextView) rootView.findViewById(R.id.detailedview_autosendtargets_text);
 
-            if(preferenceHelper.isAutoSendEnabled()){
+            if (preferenceHelper.isAutoSendEnabled()) {
                 StringBuilder sb = new StringBuilder();
                 if (FileSenderFactory.getEmailSender().isAutoSendAvailable()) {
                     sb.append(getString(R.string.autoemail_title)).append("\n");
@@ -223,11 +224,9 @@ public class GpsDetailedViewFragment extends GenericViewFragment {
                 }
 
                 txtTargets.setText(sb.toString());
-            }
-            else {
+            } else {
                 txtTargets.setText("");
             }
-
 
 
         } catch (Exception ex) {
@@ -290,33 +289,32 @@ public class GpsDetailedViewFragment extends GenericViewFragment {
     }
 
     @EventBusHook
-    public void onEventMainThread(ServiceEvents.LocationUpdate locationEvent){
+    public void onEventMainThread(ServiceEvents.LocationUpdate locationEvent) {
         displayLocationInfo(locationEvent.location);
     }
 
     @EventBusHook
-    public void onEventMainThread(ServiceEvents.SatellitesVisible satellitesVisible){
+    public void onEventMainThread(ServiceEvents.SatellitesVisible satellitesVisible) {
         setSatelliteCount(satellitesVisible.satelliteCount);
     }
 
     @EventBusHook
-    public void onEventMainThread(ServiceEvents.LoggingStatus loggingStatus){
-        if(loggingStatus.loggingStarted){
+    public void onEventMainThread(ServiceEvents.LoggingStatus loggingStatus) {
+        if (loggingStatus.loggingStarted) {
             setActionButtonStop();
             showPreferencesAndMessages();
             clearDisplay();
-        }
-        else {
+        } else {
             setActionButtonStart();
         }
     }
 
     @EventBusHook
-    public void onEventMainThread(ServiceEvents.FileNamed fileNamed){
+    public void onEventMainThread(ServiceEvents.FileNamed fileNamed) {
         showCurrentFileName(fileNamed.newFileName);
     }
 
-    public void displayLocationInfo(Location locationInfo){
+    public void displayLocationInfo(Location locationInfo) {
         if (locationInfo == null) {
             return;
         }
@@ -407,40 +405,39 @@ public class GpsDetailedViewFragment extends GenericViewFragment {
         txtTime.setText(duration + " (started at " + dateFormat.format(d) + " " + timeFormat.format(d) + ")");
 
 
-
     }
 
     @EventBusHook
-    public void onEvent(ServiceEvents.ActivityRecognitionEvent activityRecognitionEvent){
+    public void onEvent(ServiceEvents.ActivityRecognitionEvent activityRecognitionEvent) {
         TextView txtActivity = (TextView) rootView.findViewById(R.id.detailedview_activity_text);
 
         String detectedActivity = "";
-        if(activityRecognitionEvent.result.getMostProbableActivity().getType() == DetectedActivity.IN_VEHICLE){
+        if (activityRecognitionEvent.result.getMostProbableActivity().getType() == DetectedActivity.IN_VEHICLE) {
             detectedActivity = getString(R.string.activity_in_vehicle);
         }
-        if(activityRecognitionEvent.result.getMostProbableActivity().getType() == DetectedActivity.STILL){
+        if (activityRecognitionEvent.result.getMostProbableActivity().getType() == DetectedActivity.STILL) {
             detectedActivity = getString(R.string.activity_still);
         }
-        if(activityRecognitionEvent.result.getMostProbableActivity().getType() == DetectedActivity.ON_BICYCLE){
+        if (activityRecognitionEvent.result.getMostProbableActivity().getType() == DetectedActivity.ON_BICYCLE) {
             detectedActivity = getString(R.string.activity_on_bicycle);
         }
-        if(activityRecognitionEvent.result.getMostProbableActivity().getType() == DetectedActivity.ON_FOOT){
+        if (activityRecognitionEvent.result.getMostProbableActivity().getType() == DetectedActivity.ON_FOOT) {
             detectedActivity = getString(R.string.activity_on_foot);
         }
-        if(activityRecognitionEvent.result.getMostProbableActivity().getType() == DetectedActivity.RUNNING){
+        if (activityRecognitionEvent.result.getMostProbableActivity().getType() == DetectedActivity.RUNNING) {
             detectedActivity = getString(R.string.activity_running);
         }
-        if(activityRecognitionEvent.result.getMostProbableActivity().getType() == DetectedActivity.TILTING){
+        if (activityRecognitionEvent.result.getMostProbableActivity().getType() == DetectedActivity.TILTING) {
             detectedActivity = getString(R.string.activity_tilting);
         }
-        if(activityRecognitionEvent.result.getMostProbableActivity().getType() == DetectedActivity.WALKING){
+        if (activityRecognitionEvent.result.getMostProbableActivity().getType() == DetectedActivity.WALKING) {
             detectedActivity = getString(R.string.activity_walking);
         }
-        if(activityRecognitionEvent.result.getMostProbableActivity().getType() == DetectedActivity.UNKNOWN){
+        if (activityRecognitionEvent.result.getMostProbableActivity().getType() == DetectedActivity.UNKNOWN) {
             detectedActivity = getString(R.string.activity_unknown);
         }
 
-        detectedActivity +=  " - "
+        detectedActivity += " - "
                 + getString(R.string.activity_confidence)
                 + " "
                 + activityRecognitionEvent.result.getMostProbableActivity().getConfidence()

@@ -4,10 +4,12 @@ import com.mendhak.gpslogger.common.events.UploadEvents;
 import com.mendhak.gpslogger.common.slf4j.Logs;
 import com.path.android.jobqueue.Job;
 import com.path.android.jobqueue.Params;
-import de.greenrobot.event.EventBus;
+
 import org.slf4j.Logger;
 
 import java.io.File;
+
+import de.greenrobot.event.EventBus;
 
 
 public class AutoEmailJob extends Job {
@@ -24,8 +26,6 @@ public class AutoEmailJob extends Job {
     String body;
     File[] files;
     Mail m;
-
-
 
     protected AutoEmailJob(String smtpServer,
                            String smtpPort, String smtpUsername, String smtpPassword,

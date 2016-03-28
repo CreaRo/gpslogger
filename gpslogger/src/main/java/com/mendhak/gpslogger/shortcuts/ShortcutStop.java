@@ -20,12 +20,14 @@ package com.mendhak.gpslogger.shortcuts;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+
 import com.mendhak.gpslogger.GpsLoggingService;
 import com.mendhak.gpslogger.common.events.CommandEvents;
 import com.mendhak.gpslogger.common.slf4j.Logs;
-import de.greenrobot.event.EventBus;
+
 import org.slf4j.Logger;
 
+import de.greenrobot.event.EventBus;
 
 public class ShortcutStop extends Activity {
 

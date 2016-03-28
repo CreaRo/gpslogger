@@ -472,7 +472,7 @@ public class GpsLoggingService extends Service {
         PendingIntent piAnnotate = PendingIntent.getActivity(this, 0, annotateIntent, 0);
 
         // What happens when the notification item is clicked
-        Intent contentIntent = new Intent(this, GpsMainActivity.class);
+        Intent contentIntent = new Intent(this, SimpleMainActivity.class);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addNextIntent(contentIntent);

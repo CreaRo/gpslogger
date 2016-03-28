@@ -57,6 +57,8 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
     private View rootView;
     private ActionProcessButton actionButton;
 
+    private TextView displayTV, doneTV;
+
     public GpsSimpleViewFragment() {
 
     }
@@ -97,6 +99,9 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
         actionButton.setMode(ActionProcessButton.Mode.ENDLESS);
         actionButton.setBackgroundColor(ContextCompat.getColor(context, (R.color.accentColor)));
 
+        displayTV = (TextView) rootView.findViewById(R.id.fsv_display);
+        doneTV = (TextView) rootView.findViewById(R.id.fsv_done);
+
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,11 +109,15 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
             }
         });
 
-
         if (Session.hasValidLocation()) {
             displayLocationInfo(Session.getCurrentLocationInfo());
+            displayTV.setVisibility(View.GONE);
         }
 
+        doneTV.setVisibility(View.GONE);
+        if (Session.isStarted()) {
+            doneTV.setVisibility(View.VISIBLE);
+        }
 
         return rootView;
     }
@@ -117,12 +126,14 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
         actionButton.setText(R.string.btn_start_logging);
         actionButton.setBackgroundColor(ContextCompat.getColor(context, R.color.accentColor));
         actionButton.setAlpha(0.8f);
+        doneTV.setVisibility(View.GONE);
     }
 
     private void setActionButtonStop() {
         actionButton.setText(R.string.btn_stop_logging);
         actionButton.setBackgroundColor(ContextCompat.getColor(context, R.color.accentColorComplementary));
         actionButton.setAlpha(0.8f);
+        doneTV.setVisibility(View.VISIBLE);
     }
 
     private void showPreferencesSummary() {
@@ -271,9 +282,12 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
 
         if (Session.isStarted()) {
             setActionButtonStop();
+            doneTV.setVisibility(View.VISIBLE);
         } else {
             setActionButtonStart();
+            doneTV.setVisibility(View.GONE);
         }
+
         super.onResume();
     }
 
@@ -287,6 +301,7 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
     @EventBusHook
     public void onEventMainThread(ServiceEvents.LocationUpdate locationUpdate) {
         displayLocationInfo(locationUpdate.location);
+        displayTV.setVisibility(View.GONE);
     }
 
     @EventBusHook
@@ -297,6 +312,7 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
     @EventBusHook
     public void onEventMainThread(ServiceEvents.WaitingForLocation waitingForLocation) {
         onWaitingForLocation(waitingForLocation.waiting);
+        displayTV.setVisibility(View.GONE);
     }
 
     @EventBusHook
@@ -306,8 +322,10 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
             showPreferencesSummary();
             clearLocationDisplay();
             setActionButtonStop();
+            displayTV.setVisibility(View.GONE);
         } else {
             setSatelliteCount(-1);
+            displayTV.setVisibility(View.VISIBLE);
             setActionButtonStart();
         }
     }

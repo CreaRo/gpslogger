@@ -6,7 +6,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
 
-
     <string name="app_name">GPSLogger</string>
     <string name="settings_screen_name">GPSLogger Settings</string>
     <string name="ok">OK</string>
@@ -15,7 +14,8 @@
     <string name="add_description">Add a description</string>
     <string name="letters_numbers">Use only letters and numbers</string>
 
-
+    <string name="gps_network_not_enabled">gps_network_not_enabled</string>
+    <string name="open_location_settings">open_location_settings</string>
     <string name="menu_annotate">Annotate</string>
     <string name="menu_share">Share</string>
     <string name="menu_exit">Exit</string>
@@ -173,8 +173,6 @@
     <string name="autoemail_summary">Automatically emails the log file to an address of your choice</string>
 
 
-
-
     <string name="please_wait">Please wait.</string>
 
 
@@ -183,7 +181,6 @@
 
     <string name="autosend_frequency_display">After %s minutes</string>
     <string name="autoemail_frequency_whenistop">When I press stop</string>
-
 
 
     <string name="autoemail_smtp_category">Email Settings</string>
@@ -214,7 +211,6 @@
     <string name="stopped">Stopped</string>
 
 
-
     <string name="osm_setup_title">OpenStreetMap</string>
     <string name="osm_setup_summary">Set tags, description, visibility and authorization for uploading GPS Traces
     </string>
@@ -223,8 +219,6 @@
     <string name="osm_lbl_authorize_description">You will need to grant this app permissions in order to upload GPS
         traces to OpenStreetMap. You can set tags, descriptions and visibility here after you have authorized this app.
     </string>
-
-
 
 
     <string name="osm_upload">OpenStreetMap</string>
@@ -283,7 +277,7 @@
     <string name="owncloud_directory_summary">Folder to use on ownCloud server. Ensure that it exists or upload will fail.</string>
     <string name="owncloud_test">Test ownCloud Upload</string>
     <string name="owncloud_test_summary">Upload a test file to the ownCloud server</string>
-   
+
     <string name="owncloud_testing">Testing ownCloud upload</string>
     <string name="owncloud_invalid_settings">Invalid settings</string>
     <string name="owncloud_invalid_summary">Some of your settings are invalid. Please ensure that you have filled out all relevant fields. </string>
@@ -459,7 +453,7 @@
     <string name="altitude_subtractgeoidheight_title">Use MSL instead of WGS84</string>
     <string name="altitude_subtractoffset_title">Subtract altitude offset</string>
     <string name="altitude_subtractoffset_summary">A value in meters to subtract from GPS altitudes. Use a negative number to add a value to the altitude. Only applies to GPS satellite points, not network or NMEA.</string>
-	<string name="upload_failure">Could not upload the file</string>
+    <string name="upload_failure">Could not upload the file</string>
     <string name="inaccurate_point_discarded">Inaccurate point discarded</string>
     <string name="not_enough_distance_traveled">Only %s m traveled. Point discarded.</string>
     <string name="autosend_wifionly_title">Send on Wi-Fi only</string>

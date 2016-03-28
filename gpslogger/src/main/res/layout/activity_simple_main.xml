@@ -19,7 +19,9 @@
         android:id="@+id/simple_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="55dp"></FrameLayout>
+        android:layout_marginTop="55dp">
+
+    </FrameLayout>
 
     <Button
         android:id="@+id/buttosimple_test"
@@ -27,6 +29,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="Test Upload" />
+        android:text="Send All Files" />
 
 </RelativeLayout>

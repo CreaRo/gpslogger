@@ -17,7 +17,6 @@
 
 package com.mendhak.gpslogger;
 
-
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.ComponentName;
