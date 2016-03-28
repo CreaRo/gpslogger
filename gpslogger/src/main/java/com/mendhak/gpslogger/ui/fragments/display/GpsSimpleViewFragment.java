@@ -57,7 +57,7 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
     private View rootView;
     private ActionProcessButton actionButton;
 
-    private TextView displayTV, doneTV;
+    private TextView displayTV, doneTV, distanceTV;
 
     public GpsSimpleViewFragment() {
 
@@ -101,6 +101,7 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
 
         displayTV = (TextView) rootView.findViewById(R.id.fsv_display);
         doneTV = (TextView) rootView.findViewById(R.id.fsv_done);
+        distanceTV = (TextView) rootView.findViewById(R.id.fsv_distance);
 
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,6 +119,9 @@ public class GpsSimpleViewFragment extends GenericViewFragment implements View.O
         if (Session.isStarted()) {
             doneTV.setVisibility(View.VISIBLE);
         }
+
+        double distanceValue = Session.getTotalTravelled();
+        distanceTV.setText("Distance Travelled Today : " + Strings.getDistanceDisplay(getActivity(), distanceValue, preferenceHelper.shouldDisplayImperialUnits()));
 
         return rootView;
     }

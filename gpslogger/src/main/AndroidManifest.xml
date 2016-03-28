@@ -45,13 +45,7 @@
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:uiOptions="splitActionBarWhenNarrow"
-            android:windowSoftInputMode="adjustNothing">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:windowSoftInputMode="adjustNothing"></activity>
         <activity
             android:name=".MainPreferenceActivity"
             android:label="@string/settings_screen_name"
@@ -138,6 +132,8 @@
         </receiver>
         <receiver android:name=".senders.AlarmReceiver" />
 
+        <receiver android:name=".AlarmReceiverCheckLogging" />
+
         <receiver android:name=".GpsLocationReceiver">
             <intent-filter>
                 <action android:name="android.location.PROVIDERS_CHANGED" />
@@ -166,7 +162,11 @@
 
         <activity android:name=".SimpleMainActivity"></activity>
         <activity android:name=".ui.InitActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 </manifest>

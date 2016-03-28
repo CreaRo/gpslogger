@@ -1,6 +1,8 @@
 package com.mendhak.gpslogger;
 
+import android.app.AlarmManager;
 import android.app.FragmentTransaction;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -66,6 +68,7 @@ public class SimpleMainActivity extends AppCompatActivity {
         startAndBindService();
         registerEventBus();
 
+        setRecurringAlarmCheckLogging(getApplicationContext());
     }
 
     private void selectAndEmailFile() {
@@ -268,6 +271,16 @@ public class SimpleMainActivity extends AppCompatActivity {
     @EventBusHook
     public void onEventMainThread(ServiceEvents.LoggingStatus loggingStatus) {
 //        enableDisableMenuItems();
+    }
+
+    public static void setRecurringAlarmCheckLogging(Context context) {
+
+        Intent downloader = new Intent(context, AlarmReceiverCheckLogging.class);
+        PendingIntent recurringDownload = PendingIntent.getBroadcast(context, 0, downloader, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarms = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarms.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() + 10 * 1000,
+                10 * 1000, recurringDownload); /*AlarmManager.INTERVAL_FIFTEEN_MINUTES*/
     }
 
 //    @EventBusHook

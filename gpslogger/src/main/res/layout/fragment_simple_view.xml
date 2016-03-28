@@ -76,6 +76,13 @@
                         custom:pb_textProgress="Loading" />
 
                     <TextView
+                        android:id="@+id/fsv_distance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Distance Travelled Today" />
+
+                    <TextView
                         android:id="@+id/fsv_display"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

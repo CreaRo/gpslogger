@@ -3,6 +3,8 @@ package com.mendhak.gpslogger.ui;
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.mendhak.gpslogger.AlarmReceiverCheckLogging;
 import com.mendhak.gpslogger.R;
 import com.mendhak.gpslogger.SimpleMainActivity;
 import com.mendhak.gpslogger.common.PreferenceHelper;
@@ -36,6 +39,7 @@ public class InitActivity extends AppCompatActivity {
             Log.d("INITACT", "The phone number is " + PreferenceHelper.getInstance().getUserPhoneNumber());
             startActivity(new Intent(InitActivity.this, SimpleMainActivity.class));
         }
+
     }
 
     private void checkPermissionPhoneNumber() {
