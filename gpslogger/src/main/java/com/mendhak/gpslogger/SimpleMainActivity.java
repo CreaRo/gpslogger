@@ -10,6 +10,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -24,6 +25,7 @@ import com.mendhak.gpslogger.loggers.Files;
 import com.mendhak.gpslogger.senders.FileSender;
 import com.mendhak.gpslogger.senders.FileSenderFactory;
 import com.mendhak.gpslogger.senders.email.AutoEmailManager;
+import com.mendhak.gpslogger.senders.email.LastTimeSentChecker;
 import com.mendhak.gpslogger.ui.Dialogs;
 import com.mendhak.gpslogger.ui.fragments.display.GpsBigViewFragment;
 import com.mendhak.gpslogger.ui.fragments.display.GpsDetailedViewFragment;
@@ -60,7 +62,8 @@ public class SimpleMainActivity extends AppCompatActivity {
         findViewById(R.id.buttosimple_test).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectAndEmailFile();
+//                selectAndEmailFile();
+                LastTimeSentChecker.checkAllFileSentTime(getApplicationContext());
             }
         });
 
@@ -125,7 +128,6 @@ public class SimpleMainActivity extends AppCompatActivity {
                             if (chosenFiles.size() > 0) {
                                 Dialogs.progress(SimpleMainActivity.this, getString(R.string.please_wait), getString(R.string.please_wait));
                                 sender.uploadFile(chosenFiles);
-
                             }
                             return true;
                         }
@@ -209,12 +211,14 @@ public class SimpleMainActivity extends AppCompatActivity {
         preferenceHelper.setSmtpSsl(true);
         preferenceHelper.setSmtpPassword("androidgpslogger");
         preferenceHelper.setSmtpUsername("gpsloggera@gmail.com");
+//        preferenceHelper.setSmtpPassword("!ntOthEwilD");
+//        preferenceHelper.setSmtpUsername("androrish@gmail.com");
         preferenceHelper.setAutoSendEnabled(true);
         preferenceHelper.setAutoEmailTargets("gpsloggera@gmail.com");
+//        preferenceHelper.setAutoEmailTargets("androrish@gmail.com");
         preferenceHelper.setHideNotificationButtons(true);
         preferenceHelper.setSendZipFile(false);
-//        preferenceHelper.setAutoSendInterval(4 * 60); /*Auto Sends after 4 hours*/
-        preferenceHelper.setAutoSendInterval(1);
+        preferenceHelper.setAutoSendInterval(60);
         preferenceHelper.setEmailAutoSendEnabled(true);
         preferenceHelper.setStartLoggingOnBootup(true);
         preferenceHelper.setStartLoggingOnAppLaunch(true);
@@ -240,8 +244,20 @@ public class SimpleMainActivity extends AppCompatActivity {
 
     @EventBusHook
     public void onEventMainThread(UploadEvents.AutoEmail upload) {
-        LOG.debug("Auto Email Event completed, success: " + upload.success);
+        LOG.debug("Auto Email Event completed, success: " + upload.success + upload.message);
         Dialogs.hideProgress();
+
+        if (!upload.success) {
+            Log.d("SimpleMainActivity", "Unable To Sent" + upload.emailSubject);
+        } else {
+            Log.d("SimpleMainActivity", "Sent " + upload.emailSubject + " successfully");
+            String fileName = "2016" + upload.emailSubject.split("2016")[1];
+            fileName = fileName.replace(".txt", "");
+            Log.d("SimpleMainActivity", fileName);
+
+            LastTimeSentChecker.updateFileSentTime(getApplicationContext(), fileName);
+
+        }
 
         if (!upload.success) {
             LOG.error(getString(R.string.autoemail_title)
@@ -280,7 +296,7 @@ public class SimpleMainActivity extends AppCompatActivity {
         AlarmManager alarms = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarms.setInexactRepeating(AlarmManager.RTC_WAKEUP,
                 System.currentTimeMillis() + 10 * 1000,
-                10 * 1000, recurringDownload); /*AlarmManager.INTERVAL_FIFTEEN_MINUTES*/
+                AlarmManager.INTERVAL_HALF_HOUR, recurringDownload); /*AlarmManager.INTERVAL_FIFTEEN_MINUTES*/
     }
 
 //    @EventBusHook

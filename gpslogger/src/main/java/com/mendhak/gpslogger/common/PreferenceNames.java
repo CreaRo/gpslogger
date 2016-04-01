@@ -1,8 +1,8 @@
 package com.mendhak.gpslogger.common;
 
 
-public  class PreferenceNames {
-    public static final String MINIMUM_INTERVAL ="time_before_logging";
+public class PreferenceNames {
+    public static final String MINIMUM_INTERVAL = "time_before_logging";
     public static final String MINIMUM_DISTANCE = "distance_before_logging";
     public static final String MINIMUM_ACCURACY = "accuracy_before_logging";
     public static final String KEEP_GPS_ON_BETWEEN_FIXES = "keep_fix";
@@ -85,4 +85,8 @@ public  class PreferenceNames {
     public static final String SELECTED_NAVITEM = "selected_navitem";
 
     public static final String LAST_VERSION_SEEN_BY_USER = "last_version_seen";
+
+    public static final String LastEmailSentDateTime = "LastEmailSentDateTime";
+
+
 }

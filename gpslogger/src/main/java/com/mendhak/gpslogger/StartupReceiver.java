@@ -20,11 +20,14 @@ package com.mendhak.gpslogger;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+
 import com.mendhak.gpslogger.common.PreferenceHelper;
 import com.mendhak.gpslogger.common.events.CommandEvents;
 import com.mendhak.gpslogger.common.slf4j.Logs;
-import de.greenrobot.event.EventBus;
+
 import org.slf4j.Logger;
+
+import de.greenrobot.event.EventBus;
 
 
 public class StartupReceiver extends BroadcastReceiver {
@@ -39,9 +42,8 @@ public class StartupReceiver extends BroadcastReceiver {
             LOG.info("Start on bootup - " + String.valueOf(startImmediately));
 
             if (startImmediately) {
-
+                SimpleMainActivity.setRecurringAlarmCheckLogging(context);
                 EventBus.getDefault().postSticky(new CommandEvents.RequestStartStop(true));
-
                 Intent serviceIntent = new Intent(context, GpsLoggingService.class);
                 context.startService(serviceIntent);
             }

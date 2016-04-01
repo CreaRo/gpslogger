@@ -6,18 +6,21 @@ import com.mendhak.gpslogger.common.events.UploadEvents;
 import com.mendhak.gpslogger.common.slf4j.Logs;
 import com.path.android.jobqueue.Job;
 import com.path.android.jobqueue.Params;
-import de.greenrobot.event.EventBus;
+
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPSClient;
 import org.slf4j.Logger;
 
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+
+import de.greenrobot.event.EventBus;
 
 
 public class FtpJob extends Job {
@@ -77,7 +80,7 @@ public class FtpJob extends Job {
             }
 
         } catch (Exception e) {
-            jobResult = new UploadEvents.Ftp().failed( "Could not create FTP Client" , e);
+            jobResult = new UploadEvents.Ftp().failed("Could not create FTP Client", e);
             LOG.error("Could not create FTP Client", e);
             return false;
         }
@@ -112,21 +115,21 @@ public class FtpJob extends Job {
                 if (result) {
                     LOG.debug("Successfully FTPd file " + fileName);
                 } else {
-                    jobResult = new UploadEvents.Ftp().failed( "Failed to FTP file " + fileName , null);
+                    jobResult = new UploadEvents.Ftp().failed("Failed to FTP file " + fileName);
                     LOG.debug("Failed to FTP file " + fileName);
                     return false;
                 }
 
             } else {
                 logServerReply(client);
-                jobResult = new UploadEvents.Ftp().failed( "Could not log in to FTP server" , null);
+                jobResult = new UploadEvents.Ftp().failed("Could not log in to FTP server");
                 LOG.debug("Could not log in to FTP server");
                 return false;
             }
 
         } catch (Exception e) {
             logServerReply(client);
-            jobResult = new UploadEvents.Ftp().failed( "Could not connect or upload to FTP server.", e);
+            jobResult = new UploadEvents.Ftp().failed("Could not connect or upload to FTP server.", e);
             LOG.error("Could not connect or upload to FTP server.", e);
             return false;
         } finally {
@@ -137,8 +140,8 @@ public class FtpJob extends Job {
                 client.disconnect();
                 logServerReply(client);
             } catch (Exception e) {
-                if(jobResult == null){
-                    jobResult = new UploadEvents.Ftp().failed( "Could not logout or disconnect", e);
+                if (jobResult == null) {
+                    jobResult = new UploadEvents.Ftp().failed("Could not logout or disconnect", e);
                 }
 
                 LOG.error("Could not logout or disconnect", e);
@@ -175,7 +178,7 @@ public class FtpJob extends Job {
 
     private static void logServerReply(FTPClient client) {
         String singleReply = client.getReplyString();
-        if(!Strings.isNullOrEmpty(singleReply)){
+        if (!Strings.isNullOrEmpty(singleReply)) {
             ftpServerResponses.add(singleReply);
             LOG.debug("FTP SERVER: " + singleReply);
         }
@@ -183,7 +186,7 @@ public class FtpJob extends Job {
         String[] replies = client.getReplyStrings();
         if (replies != null && replies.length > 0) {
             for (String aReply : replies) {
-                if(!Strings.isNullOrEmpty(aReply)){
+                if (!Strings.isNullOrEmpty(aReply)) {
                     ftpServerResponses.add(aReply);
                     LOG.debug("FTP SERVER: " + aReply);
                 }
@@ -219,6 +222,6 @@ public class FtpJob extends Job {
     }
 
     public static String getJobTag(File testFile) {
-        return "FTP"+testFile.getName();
+        return "FTP" + testFile.getName();
     }
 }

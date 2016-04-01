@@ -58,6 +58,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class GpsLoggingService extends Service {
     private static NotificationManager notificationManager;

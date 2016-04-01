@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 
 /**
@@ -62,8 +63,10 @@ public class PlainTextFileLogger implements FileLogger {
 
         FileOutputStream writer = new FileOutputStream(file, true);
         BufferedOutputStream output = new BufferedOutputStream(writer);
+        int gmtOffset = TimeZone.getDefault().getRawOffset();
+        long now = loc.getTime() + gmtOffset;
 
-        String dateTimeString = Strings.getIsoDateTime(new Date(loc.getTime()));
+        String dateTimeString = Strings.getIsoDateTime(new Date(now));
 
         String outputString = String.format(Locale.US, "%s,%f,%f,%f,%f,%f,%f,%d,%s\n",
                 dateTimeString,

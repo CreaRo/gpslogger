@@ -30,7 +30,7 @@ public class AutoEmailJob extends Job {
     protected AutoEmailJob(String smtpServer,
                            String smtpPort, String smtpUsername, String smtpPassword,
                            boolean smtpUseSsl, String csvEmailTargets, String fromAddress,
-                            String subject, String body, File[] files) {
+                           String subject, String body, File[] files) {
         super(new Params(1).requireNetwork().persist().addTags(getJobTag(files)));
         this.smtpServer = smtpServer;
         this.smtpPort = smtpPort;
@@ -78,9 +78,9 @@ public class AutoEmailJob extends Job {
 
         LOG.info("Sending email...");
         if (m.send()) {
-            EventBus.getDefault().post(new UploadEvents.AutoEmail().succeeded());
+            EventBus.getDefault().post(new UploadEvents.AutoEmail().succeeded("", files[0].getName()));
         } else {
-            EventBus.getDefault().post(new UploadEvents.AutoEmail().failed());
+            EventBus.getDefault().post(new UploadEvents.AutoEmail().failed("", files[0].getName()));
         }
     }
 
@@ -100,7 +100,7 @@ public class AutoEmailJob extends Job {
 
     public static String getJobTag(File[] files) {
         StringBuilder sb = new StringBuilder();
-        for(File f : files){
+        for (File f : files) {
             sb.append(f.getName()).append(".");
         }
         return "EMAIL" + sb.toString();

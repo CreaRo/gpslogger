@@ -833,6 +833,21 @@ public class PreferenceHelper {
     }
 
     /**
+     * Sets LastEmailSentDateTime
+     */
+    public void setLastEmailSentDateTime(String secret) {
+        prefs.edit().putString(PreferenceNames.LastEmailSentDateTime, secret).apply();
+    }
+
+    /**
+     * Gets LastEmailSentDateTime
+     */
+    public String getLastEmailSentDateTime() {
+        return prefs.getString(PreferenceNames.LastEmailSentDateTime, "");
+    }
+
+
+    /**
      * Sets request token for OpenStreetMap auto send
      */
     public void setOSMRequestToken(String token) {

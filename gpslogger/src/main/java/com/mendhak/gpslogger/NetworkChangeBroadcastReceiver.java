@@ -10,14 +10,14 @@ import com.mendhak.gpslogger.common.Session;
 import com.mendhak.gpslogger.shortcuts.ShortcutStart;
 
 /**
- * Created by rish on 28/3/16.
+ * Created by rish on 1/4/16.
  */
-public class AlarmReceiverCheckLogging extends BroadcastReceiver {
-    private static final String DEBUG_TAG = "AlarmReceiver";
+public class NetworkChangeBroadcastReceiver extends BroadcastReceiver {
+
+    private static final String DEBUG_TAG = "NetworkChangeBroadcast";
 
     @Override
-    public void onReceive(Context context, Intent intent) {
-        Log.d(DEBUG_TAG, "Recurring alarm; Session Started? " + Session.isStarted());
+    public void onReceive(final Context context, final Intent intent) {
 
         if (Session.isStarted()) {
             // Do nothing
@@ -32,5 +32,6 @@ public class AlarmReceiverCheckLogging extends BroadcastReceiver {
             intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent1);
         }
+
     }
 }

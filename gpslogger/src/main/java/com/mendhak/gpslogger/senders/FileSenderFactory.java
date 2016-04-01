@@ -27,6 +27,7 @@ import com.mendhak.gpslogger.senders.googledrive.GoogleDriveManager;
 import com.mendhak.gpslogger.senders.opengts.OpenGTSManager;
 import com.mendhak.gpslogger.senders.osm.OpenStreetMapManager;
 import com.mendhak.gpslogger.senders.owncloud.OwnCloudManager;
+
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -71,7 +72,8 @@ public class FileSenderFactory {
     public static void autoSendFiles(final String fileToSend) {
 
         PreferenceHelper preferenceHelper = PreferenceHelper.getInstance();
-        LOG.info("Sending file " + fileToSend);
+
+        LOG.info("Requested to send file " + fileToSend);
 
         File gpxFolder = new File(preferenceHelper.getGpsLoggerFolder());
 
@@ -115,12 +117,12 @@ public class FileSenderFactory {
         for (FileSender sender : senders) {
             LOG.debug("Sender: " + sender.getClass().getName());
             //Special case for OSM Uploader
-            if(!sender.accept(null, ".zip")){
+            if (!sender.accept(null, ".zip")) {
                 sender.uploadFile(files);
                 continue;
             }
 
-            if(preferenceHelper.shouldSendZipFile()){
+            if (preferenceHelper.shouldSendZipFile()) {
                 sender.uploadFile(zipFiles);
             } else {
                 sender.uploadFile(files);
@@ -135,31 +137,31 @@ public class FileSenderFactory {
         List<FileSender> senders = new ArrayList<>();
 
 
-        if(getGoogleDriveSender().isAutoSendAvailable()){
+        if (getGoogleDriveSender().isAutoSendAvailable()) {
             senders.add(getGoogleDriveSender());
         }
 
-        if(getOsmSender().isAutoSendAvailable()){
+        if (getOsmSender().isAutoSendAvailable()) {
             senders.add(getOsmSender());
         }
 
-        if(getEmailSender().isAutoSendAvailable()){
+        if (getEmailSender().isAutoSendAvailable()) {
             senders.add(getEmailSender());
         }
 
-        if(getDropBoxSender().isAutoSendAvailable()){
+        if (getDropBoxSender().isAutoSendAvailable()) {
             senders.add(getDropBoxSender());
         }
 
-        if(getOpenGTSSender().isAutoSendAvailable()){
+        if (getOpenGTSSender().isAutoSendAvailable()) {
             senders.add(getOpenGTSSender());
         }
 
-        if(getFtpSender().isAutoSendAvailable()){
+        if (getFtpSender().isAutoSendAvailable()) {
             senders.add(getFtpSender());
         }
 
-        if(getOwnCloudSender().isAutoSendAvailable()){
+        if (getOwnCloudSender().isAutoSendAvailable()) {
             senders.add(getOwnCloudSender());
         }
 

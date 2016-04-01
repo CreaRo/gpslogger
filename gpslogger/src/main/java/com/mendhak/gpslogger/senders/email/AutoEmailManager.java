@@ -62,8 +62,6 @@ public class AutoEmailManager extends FileSender {
                         subject, body, filesToSend.toArray(new File[filesToSend.size()])));
             }
         }, TagConstraint.ANY, AutoEmailJob.getJobTag(filesToSend.toArray(new File[filesToSend.size()])));
-
-
     }
 
     @Override
