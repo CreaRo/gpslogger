@@ -2,25 +2,25 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="gpslogger_preferences">
 
-    <com.mendhak.gpslogger.ui.components.CustomSwitchPreference
+    <com.crearo.gpslogger.ui.components.CustomSwitchPreference
         android:key="startonbootup"
         android:summary="@string/startonbootup_summary"
         android:title="@string/startonbootup_title" />
 
-    <com.mendhak.gpslogger.ui.components.CustomSwitchPreference
+    <com.crearo.gpslogger.ui.components.CustomSwitchPreference
         android:key="startonapplaunch"
         android:summary="@string/startonapplaunch_summary"
         android:title="@string/startonapplaunch_title" />
 
-    <com.mendhak.gpslogger.ui.components.CustomSwitchPreference
+    <com.crearo.gpslogger.ui.components.CustomSwitchPreference
         android:key="useImperial"
         android:summary="@string/display_imperial_summary"
         android:title="@string/display_imperial_title" />
 
-    <com.mendhak.gpslogger.ui.components.CustomSwitchPreference
+    <com.crearo.gpslogger.ui.components.CustomSwitchPreference
         android:key="hide_notification_buttons"
         android:summary="@string/hide_notification_buttons_summary"
-        android:title="@string/hide_notification_buttons"></com.mendhak.gpslogger.ui.components.CustomSwitchPreference>
+        android:title="@string/hide_notification_buttons"></com.crearo.gpslogger.ui.components.CustomSwitchPreference>
 
     <Preference
         android:defaultValue="false"
@@ -28,7 +28,7 @@
         android:summary="@string/enabledisablegps_summary"
         android:title="@string/enabledisablegps_title" />
 
-    <com.mendhak.gpslogger.ui.components.CustomSwitchPreference
+    <com.crearo.gpslogger.ui.components.CustomSwitchPreference
         android:defaultValue="false"
         android:key="debugtofile"
         android:summary="@string/debuglog_summary"

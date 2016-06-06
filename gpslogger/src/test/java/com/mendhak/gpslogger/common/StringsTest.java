@@ -1,4 +1,4 @@
-package com.mendhak.gpslogger.common;
+package com.crearo.gpslogger.common;
 
 import android.content.Context;
 import android.os.Build;

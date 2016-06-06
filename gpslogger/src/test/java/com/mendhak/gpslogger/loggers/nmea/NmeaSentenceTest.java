@@ -1,4 +1,4 @@
-package com.mendhak.gpslogger.loggers.nmea;
+package com.crearo.gpslogger.loggers.nmea;
 
 import android.test.suitebuilder.annotation.SmallTest;
 import org.junit.Test;

@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <TableLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,7 +79,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="Distance Travelled Today" />
+                        android:gravity="center"
+                        android:text="Text about app" />
 
                     <TextView
                         android:id="@+id/fsv_display"
@@ -360,6 +360,12 @@
                 </GridLayout>
             </TableRow>
 
+            <TableRow>
+
+                <Button
+                    android:id="@+id/simpleview_removenoti"
+                    android:text="Remove Notification" />
+            </TableRow>
         </TableLayout>
 
     </RelativeLayout>

@@ -1,9 +1,9 @@
-package com.mendhak.gpslogger.loggers.opengts;
+package com.crearo.gpslogger.loggers.opengts;
 
 import android.location.Location;
 import android.test.suitebuilder.annotation.SmallTest;
-import com.mendhak.gpslogger.common.SerializableLocation;
-import com.mendhak.gpslogger.loggers.MockLocations;
+import com.crearo.gpslogger.common.SerializableLocation;
+import com.crearo.gpslogger.loggers.MockLocations;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;

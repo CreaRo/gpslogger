@@ -1,4 +1,4 @@
-package com.mendhak.gpslogger.ui;
+package com.crearo.gpslogger.ui;
 
 import android.test.suitebuilder.annotation.SmallTest;
 import org.junit.Test;

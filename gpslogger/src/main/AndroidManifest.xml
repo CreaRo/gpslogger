@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.mendhak.gpslogger"
+    package="com.crearo.gpslogger"
     android:installLocation="auto">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -21,7 +21,7 @@
         tools:ignore="MockLocation" />
 
     <application
-        android:name=".common.AppSettings"
+        android:name="com.crearo.gpslogger.common.AppSettings"
         android:allowBackup="true"
         android:icon="@drawable/gpsloggericon3"
         android:label="@string/app_name"
@@ -32,30 +32,30 @@
             android:value="@integer/google_play_services_version" />
 
         <service
-            android:name=".GpsLoggingService"
+            android:name="com.crearo.gpslogger.GpsLoggingService"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.mendhak.gpslogger.GpsLoggingService" />
+                <action android:name="com.crearo.gpslogger.GpsLoggingService" />
             </intent-filter>
         </service>
 
         <activity
-            android:name=".GpsMainActivity"
+            android:name="com.crearo.gpslogger.GpsMainActivity"
             android:configChanges="locale"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:uiOptions="splitActionBarWhenNarrow"
             android:windowSoftInputMode="adjustNothing"></activity>
         <activity
-            android:name=".MainPreferenceActivity"
+            android:name="com.crearo.gpslogger.MainPreferenceActivity"
             android:label="@string/settings_screen_name"
-            android:parentActivityName=".GpsMainActivity">
+            android:parentActivityName="com.crearo.gpslogger.GpsMainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mendhak.gpslogger.GpsMainActivity" />
+                android:value="com.crearo.gpslogger.GpsMainActivity" />
 
             <intent-filter>
-                <action android:name="com.mendhak.gpslogger.MAIN_PREFS" />
+                <action android:name="com.crearo.gpslogger.MAIN_PREFS" />
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -67,22 +67,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Faqtivity"
+            android:name="com.crearo.gpslogger.Faqtivity"
             android:label="@string/faq_screen_title"
             android:launchMode="singleTask"
-            android:parentActivityName=".GpsMainActivity">
+            android:parentActivityName="com.crearo.gpslogger.GpsMainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mendhak.gpslogger.GpsMainActivity" />
+                android:value="com.crearo.gpslogger.GpsMainActivity" />
         </activity>
         <activity
             android:name="com.dropbox.client2.android.AuthActivity"
             android:configChanges="orientation|keyboard"
             android:launchMode="singleTask"
-            android:parentActivityName=".GpsMainActivity">
+            android:parentActivityName="com.crearo.gpslogger.GpsMainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mendhak.gpslogger.GpsMainActivity" />
+                android:value="com.crearo.gpslogger.GpsMainActivity" />
 
             <intent-filter>
 
@@ -97,7 +97,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".shortcuts.ShortcutCreate"
+            android:name="com.crearo.gpslogger.shortcuts.ShortcutCreate"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
@@ -106,14 +106,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".shortcuts.ShortcutStart"
+            android:name="com.crearo.gpslogger.shortcuts.ShortcutStart"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".shortcuts.ShortcutStop"
+            android:name="com.crearo.gpslogger.shortcuts.ShortcutStop"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -121,7 +121,7 @@
         </activity>
 
         <receiver
-            android:name=".NetworkChangeBroadcastReceiver"
+            android:name="com.crearo.gpslogger.NetworkChangeBroadcastReceiver"
             android:label="NetworkChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -130,7 +130,7 @@
         </receiver>
 
         <receiver
-            android:name=".StartupReceiver"
+            android:name="com.crearo.gpslogger.StartupReceiver"
             android:enabled="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>
@@ -139,11 +139,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".senders.AlarmReceiver" />
+        <receiver android:name="com.crearo.gpslogger.senders.AlarmReceiver" />
 
-        <receiver android:name=".AlarmReceiverCheckLogging" />
+        <receiver android:name="com.crearo.gpslogger.AlarmReceiverCheckLogging" />
 
-        <receiver android:name=".GpsLocationReceiver">
+        <receiver android:name="com.crearo.gpslogger.GpsLocationReceiver">
             <intent-filter>
                 <action android:name="android.location.PROVIDERS_CHANGED" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -152,25 +152,25 @@
 
         <!-- android:theme="@style/Theme.AppCompat.Translucent" -->
         <activity
-            android:name=".NotificationAnnotationActivity"
+            android:name="com.crearo.gpslogger.NotificationAnnotationActivity"
             android:excludeFromRecents="true"
             android:label=""
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="android.intent.category.DEFAULT" />
 
-                <category android:name="com.mendhak.gpslogger.NOTIFICATION_BUTTON" />
+                <category android:name="com.crearo.gpslogger.NOTIFICATION_BUTTON" />
             </intent-filter>
         </activity>
 
         <provider
-            android:name=".common.ContentApi"
-            android:authorities="com.mendhak.gpslogger"
+            android:name="com.crearo.gpslogger.common.ContentApi"
+            android:authorities="com.crearo.gpslogger"
             android:exported="true"
             tools:ignore="ExportedContentProvider" />
 
-        <activity android:name=".SimpleMainActivity"></activity>
-        <activity android:name=".ui.InitActivity">
+        <activity android:name="com.crearo.gpslogger.SimpleMainActivity"></activity>
+        <activity android:name="com.crearo.gpslogger.ui.InitActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

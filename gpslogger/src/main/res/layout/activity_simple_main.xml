@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mendhak.gpslogger.SimpleMainActivity">
+    tools:context="com.crearo.gpslogger.SimpleMainActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/simple_toolbar"
@@ -27,8 +27,16 @@
         android:id="@+id/buttosimple_test"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/simple_btn_text"
         android:layout_centerHorizontal="true"
         android:text="Send All Files" />
+
+    <TextView
+        android:id="@+id/simple_btn_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Press this button only IF we ask you to!" />
 
 </RelativeLayout>

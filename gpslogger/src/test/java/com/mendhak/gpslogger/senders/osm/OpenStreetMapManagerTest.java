@@ -1,8 +1,8 @@
-package com.mendhak.gpslogger.senders.osm;
+package com.crearo.gpslogger.senders.osm;
 
 
 import android.test.suitebuilder.annotation.SmallTest;
-import com.mendhak.gpslogger.common.PreferenceHelper;
+import com.crearo.gpslogger.common.PreferenceHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;

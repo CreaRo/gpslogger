@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#34495e"
-    tools:context="com.mendhak.gpslogger.ui.InitActivity">
+    tools:context="com.crearo.gpslogger.ui.InitActivity">
 
     <TextView
         android:layout_width="match_parent"

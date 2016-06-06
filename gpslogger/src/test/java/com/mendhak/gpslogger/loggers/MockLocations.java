@@ -1,4 +1,4 @@
-package com.mendhak.gpslogger.loggers;
+package com.crearo.gpslogger.loggers;
 
 import android.location.Location;
 import android.os.Bundle;
